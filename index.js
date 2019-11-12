@@ -1,32 +1,33 @@
 console.log("index loaded");
 $(document).ready(function () {
     console.log("document ready, jquery working");
-    //remember my username Rochelle.Wolfe_DRGPartner
 
-    // /**Dummy Project details for the sample Layer I made*/
+    /**#######################   LOGGING IN TO COLLECTOR    #########################**/
+    //~~~~remember my username Rochelle.Wolfe_DRGPartner
+    var token;
+    var messageDiv = document.getElementById('message')
+
+    /**Dummy Project details for the sample arcgis app I made*/
     // var clientId = 'Cgx3mZ18s8C3bqGs';
     // var clientSecret = 'dcf1f44ea97345a99dc4695284624000';
 
-    /**Kent Ohio Stormwater */
+    /**Kent Ohio Stormwater sample argis app that Holly made */
     var clientId = 'Lv925FWYHn6Tg1ga'; // 
     var clientSecret = '7e442cc80b974ab6a94f3bd3d7e67f18'; // 
 
-    var redirectUri = 'http://localhost:5500/';
-    var signInButton = document.getElementById('sign-in');
-    var signInUrl = 'https://www.arcgis.com/sharing/rest/oauth2/authorize?client_id=' + clientId + '&response_type=token&expiration=20160&redirect_uri=' + redirectUri;
-    var token;
-    var messageDiv = document.getElementById('message')
+    /**##  This gets and obtains the access token if logged in (after login link is clicked) REQUIRES CLIENT ID ##**/
+    // var redirectUri = 'http://localhost:5500/';
+    // var signInButton = document.getElementById('sign-in');
+    // var signInUrl = 'https://www.arcgis.com/sharing/rest/oauth2/authorize?client_id=' + clientId + '&response_type=token&expiration=20160&redirect_uri=' + redirectUri;
     // signInButton.href = signInUrl;
-
-    /**This gets and obtains the access token if logged in (after login link is clicked) **/
-    var match = (window.location.hash) ? window.location.hash.match(/#access_token=([^&]+)/) : false;
-    // if we found an access token in the URL pass the token up to a global function in
-    if (match[1]) {
-        signInButton.style.visibility = "hidden";
-        token = match[1];
-        messageDiv.innerHTML = "login token is : <br/>" + token;
-        messageDiv.innerHTML = "Okay, you're logged in. Click to get data";
-    }
+    // var match = (window.location.hash) ? window.location.hash.match(/#access_token=([^&]+)/) : false;
+    // // if we found an access token in the URL pass the token up to a global function in
+    // if (match[1]) {
+    //     signInButton.style.visibility = "hidden";
+    //     token = match[1];
+    //     messageDiv.innerHTML = "login token is : <br/>" + token;
+    //     messageDiv.innerHTML = "Okay, you're logged in. Click to get data";
+    // }
 
 
     // /**## This will return an access token without the user logging in (uses clientID and secretID) ##**/
@@ -74,15 +75,7 @@ $(document).ready(function () {
             messageDiv.innerHTML = "Ut-oh, login failed. Try clicking the login link.";
         });
 
-
-
-
-
-
-
-
-
-
+/**#######################   GETTING DATA FROM COLLECTOR    #########################**/
     /** Query ALL the features from the whole TEST API */
     $("#get-test-data").click(function () {
         messageDiv.innerHTML = "Let's get some data";
@@ -129,23 +122,26 @@ $(document).ready(function () {
                 // returnCountOnly: "true",
                 f: "json",
                 // where: "1=1",
-                where: "OBJECTID = 10",
+                where: "OBJECTID > 0",
                 outSr: "4326",
-                // outfields: "*"
-                outfields: "OBJECTID,Site_Status,Manhole_Number,StreetName"
+                outfields: "*"
+                // outfields: "OBJECTID,Site_Status,Manhole_Number,StreetName"
             }
         }) //end .ajax
             .done(function (msg) {
                 console.log(msg);
-                var jsonInfo = JSON.stringify(msg.features);
-                // messageDiv.innerHTML = "Data: <br>" + msg;
-                messageDiv.innerHTML = "Data: <br>" + jsonInfo;
+                var jsonInfoAsString = JSON.stringify(msg.features);
+                // messageDiv.innerHTML = "Data: <br>" + jsonInfoAsString;
+                // messageDiv.innerHTML = "Data (string) length: <br>" + jsonInfoAsString.length;
+                // messageDiv.innerHTML = "Data : <br>" + JSON.stringify(msg.features[0]);
+                // messageDiv.innerHTML = "Data: <br>" + JSON.stringify(msg.features[0].attributes.OBJECTID);
+                messageDiv.innerHTML = "Data: <br>" + msg.features[0].attributes.OBJECTID; //successfully returns the property
             })
             .fail(function (jqXHR, textStatus) {
                 alert("Request failed: " + textStatus);
                 messageDiv.innerHTML = "Ut-oh, data fetch failed.";
             });
-        messageDiv.innerHTML = "That's all";
+        messageDiv.innerHTML = "Working on it";
     });//end on click
 
 

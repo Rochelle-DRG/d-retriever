@@ -1,0 +1,30 @@
+{
+    "properties": {
+        "WRK_REGION": "N\/A",
+        "WRK_AREA": "N/A",
+        "UNIQUEID": "ShLa20191109143347",
+        "NOTES": "",
+        "ChangeTIME": "14:33:47",
+        "Inv_Time": "14:33:47",
+        "ChangeDATE": "11-09-2019",
+        "Inv_Date": "11-09-2019",
+        "Status": "Existing",
+        "Type": "ODOT Type 3A",
+        "Inv_North": "",
+        "Inv_South": "",
+        "Inv_East": "",
+        "Inv_West": "",
+        "Inv_NW": "",
+        "Inv_NE": "",
+        "Inv_SW": "",
+        "Inv_SE": ""
+    },
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            -9059076.5919302,
+            5035854.79019808
+        ]
+    },
+    "factype": "Storm Catch Basins and Inlets"
+}
