@@ -75,7 +75,7 @@ $(document).ready(function () {
             messageDiv.innerHTML = "Ut-oh, login failed. Try clicking the login link.";
         });
 
-/**#######################   GETTING DATA FROM COLLECTOR    #########################**/
+    /**#######################   GETTING DATA FROM COLLECTOR    #########################**/
     /** Query ALL the features from the whole TEST API */
     $("#get-test-data").click(function () {
         messageDiv.innerHTML = "Let's get some data";
@@ -113,7 +113,7 @@ $(document).ready(function () {
         messageDiv.innerHTML = "Let's get some data";
         $.ajax({
             method: "POST",
-            url: "https://services3.arcgis.com/kwmUh9MJciUcuce3/arcgis/rest/services/MyMapService/FeatureServer/0/query?token="+token,
+            url: "https://services3.arcgis.com/kwmUh9MJciUcuce3/arcgis/rest/services/MyMapService/FeatureServer/0/query?token=" + token,
             // url: "https://services3.arcgis.com/kwmUh9MJciUcuce3/arcgis/rest/services/MyMapService/FeatureServer/0/query?token=g6SmFR5yRa07hhE7Rn5UzNBK8YghiP9oixoMnIrN8_hpA3G42asSjxgl0e5wjJeRXUSjlQNx087st9EFE68wVtRMAUDmpkyaJHLW8vN7SRDZpvw9lTm-jwUCvzkKWrNsJ6wR-t3nn2dG9yCcJDnSCp9ziB_krdlVlyUpvz82iWyEpzhMPyAFlDINWSlZeY2Y60_YPFj58u3SEbyu4XzIw5_jBsCvPe6myJGb4eL1wf0hu8ZHtcPFAZ9ITMGZeTKH",
             // url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0/query",
             // token: token,
@@ -135,15 +135,155 @@ $(document).ready(function () {
                 // messageDiv.innerHTML = "Data (string) length: <br>" + jsonInfoAsString.length;
                 // messageDiv.innerHTML = "Data : <br>" + JSON.stringify(msg.features[0]);
                 // messageDiv.innerHTML = "Data: <br>" + JSON.stringify(msg.features[0].attributes.OBJECTID);
-                messageDiv.innerHTML = "Data: <br>" + msg.features[0].attributes.OBJECTID; //successfully returns the property
+                // messageDiv.innerHTML = "Data: <br>" + msg.features[0].attributes.OBJECTID; //successfully returns the property
+
+                /** For each manhole */
+                for (let i = 0; i < msg.features.length; i++) {
+                    let stormManhole = makeManhole(msg.features[i]); //returns MRK-ready manhole object
+                    // submitToMRK(stormManhole);
+                }
+
+
+
+
             })
             .fail(function (jqXHR, textStatus) {
                 alert("Request failed: " + textStatus);
                 messageDiv.innerHTML = "Ut-oh, data fetch failed.";
             });
         messageDiv.innerHTML = "Working on it";
-    });//end on click
+    });//end on clicking get-data button
 
+
+    /**#######################   FORMATTING COLLECTOR DATA FOR MRK    #########################**/
+
+
+    function makeManhole(collectedManhole) {
+        let manhole = {
+            properties: {
+                WRK_REGION: "N\/A",
+                WRK_AREA: "N/A",
+                UNIQUEID: collectedManhole.attributes.GlobalID,
+                NOTES: collectedManhole.attributes.Comments,
+                ChangeTIME: formatTime(collectedManhole.attributes.EditDate),
+                Inv_Time: formatTime(collectedManhole.attributes.CreationDate),
+                ChangeDATE: formatDate(collectedManhole.attributes.EditDate),
+                Inv_Date: formatDate(collectedManhole.attributes.CreationDate),
+                Status: collectedManhole.attributes.Site_Status,
+                MH_ID: "",
+                Elevation: 0, //collectedManhole.attributes.TopElevationft,
+                Inverts: collectedManhole.attributes.NumberInverts,
+                Location: "",
+                DT_Verify: formatDate(collectedManhole.attributes.EditDate),
+                Material: collectedManhole.attributes.MaterialMH,
+                Invert_1: collectedManhole.attributes.Invert1,
+                Invert_2: collectedManhole.attributes.Invert2,
+                Invert_3: collectedManhole.attributes.Invert3,
+                Invert_4: collectedManhole.attributes.Invert4,
+                Invert_5: collectedManhole.attributes.Invert5,
+                Invert_6: collectedManhole.attributes.Invert6,
+                Invert_7: collectedManhole.attributes.Invert7,
+                Invert_8: collectedManhole.attributes.Invert8,
+                FormInv: collectedManhole.attributes.FormedInvert,
+                Steps: collectedManhole.attributes.Steps,
+                SolLid: collectedManhole.attributes.SolidLid
+            },
+            geometry: {
+                type: "point",
+                coordinates: [
+                    collectedManhole.geometry.x,
+                    collectedManhole.geometry.y,
+                ]
+            },
+            factype: "Storm Manholes"
+        };
+
+        return manhole;
+    } // end makeManhole
+
+    function formatDate(collectorDate) {
+        let d = new Date(collectorDate);
+        let formattedDate = d.getMonth() + "-" + d.getDate() + "-" + d.getFullYear();
+        return formattedDate;
+    }
+    function formatTime(collectorDate) {
+        let d = new Date(collectorDate);
+        let formattedTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+        return formattedTime;
+    }
+
+
+
+    /**#######################   SUBMITTING DATA TO MRK    #########################**/
+
+    let testManhole = {
+        "properties": {
+            "WRK_REGION": "N\/A",
+            "WRK_AREA": "N/A",
+            "UNIQUEID": "ShLa20191108153127",
+            "NOTES": "",
+            "ChangeTIME": "15:31:48",
+            "Inv_Time": "15:31:27",
+            "ChangeDATE": "11-08-2019",
+            "Inv_Date": "11-08-2019",
+            "Status": "Existing",
+            "MH_ID": "",
+            "Elevation": 0,
+            "Inverts": "0",
+            "Location": "",
+            "DT_Verify": 20191108,
+            "Material": "Unassigned",
+            "Invert_1": "",
+            "Invert_2": "",
+            "Invert_3": "",
+            "Invert_4": "",
+            "Invert_5": "",
+            "Invert_6": "",
+            "Invert_7": "",
+            "Invert_8": "",
+            "FormInv": "Unassigned",
+            "Steps": "Unassigned",
+            "SolLid": "Yes"
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [
+                -9058101.08891544,
+                5036721.17612163
+            ]
+        },
+        "factype": "Storm Manholes"
+    };
+
+    submitToMRK(testManhole);
+
+    function submitToMRK(manhole) {
+        console.log("submitting to TK");
+
+        $.ajax({
+            method: "POST",
+            url: "https://clientapi.rowkeeper.com/api/v1/proxy/upload/feature",
+            dataType: "json",
+            data: {
+                f: "json",
+                username: "rwolfe",
+                password: "1Justice!",
+                projectId: "8514", //test project id, real Kent id =1
+                key: "fedce050-04a3-11ea-945b-5740d47ce5e1", //this will be the same for real Kent and test project
+                feature: manhole
+            }
+        })
+            .done(function (msg) {
+                console.log(success);
+            })
+            .fail(function (jqXHR, textStatus) {
+                console.log("Submit request failed: " + textStatus);
+                messageDiv.innerHTML = "Ut-oh, submitting failed. "+ textStatus;
+            })
+
+
+
+    }
 
 
 
