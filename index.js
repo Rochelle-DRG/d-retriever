@@ -278,7 +278,7 @@ $(document).ready(function () {
             data: JSON.stringify(dataVar)
         })
             .done(function (msg) {
-                console.log(success);
+                console.log("success");
             })
             .fail(function (jqXHR, textStatus) {
                 console.log("Submit request failed: " + textStatus);
