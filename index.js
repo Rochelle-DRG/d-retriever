@@ -129,7 +129,7 @@ $(document).ready(function () {
             }
         }) //end .ajax
             .done(function (msg) {
-                console.log(msg);
+                // console.log(msg);
                 var jsonInfoAsString = JSON.stringify(msg.features);
                 // messageDiv.innerHTML = "Data: <br>" + jsonInfoAsString;
                 // messageDiv.innerHTML = "Data (string) length: <br>" + jsonInfoAsString.length;
@@ -217,61 +217,65 @@ $(document).ready(function () {
     /**#######################   SUBMITTING DATA TO MRK    #########################**/
 
     let testManhole = {
-        "properties": {
-            "WRK_REGION": "N\/A",
-            "WRK_AREA": "N/A",
-            "UNIQUEID": "ShLa20191108153127",
-            "NOTES": "",
-            "ChangeTIME": "15:31:48",
-            "Inv_Time": "15:31:27",
-            "ChangeDATE": "11-08-2019",
-            "Inv_Date": "11-08-2019",
-            "Status": "Existing",
-            "MH_ID": "",
-            "Elevation": 0,
-            "Inverts": "0",
-            "Location": "",
-            "DT_Verify": 20191108,
-            "Material": "Unassigned",
-            "Invert_1": "",
-            "Invert_2": "",
-            "Invert_3": "",
-            "Invert_4": "",
-            "Invert_5": "",
-            "Invert_6": "",
-            "Invert_7": "",
-            "Invert_8": "",
-            "FormInv": "Unassigned",
-            "Steps": "Unassigned",
-            "SolLid": "Yes"
+        properties: {
+            WRK_REGION: "N\/A",
+            WRK_AREA: "N/A",
+            UNIQUEID: "ShLa20191108153127",
+            NOTES: "",
+            ChangeTIME: "15:31:48",
+            Inv_Time: "15:31:27",
+            ChangeDATE: "11-08-2019",
+            Inv_Date: "11-08-2019",
+            Status: "Existing",
+            MH_ID: "",
+            Elevation: 0,
+            Inverts: "0",
+            Location: "",
+            DT_Verify: 20191108,
+            Material: "Unassigned",
+            Invert_1: "",
+            Invert_2: "",
+            Invert_3: "",
+            Invert_4: "",
+            Invert_5: "",
+            Invert_6: "",
+            Invert_7: "",
+            Invert_8: "",
+            FormInv: "Unassigned",
+            Steps: "Unassigned",
+            SolLid: "Yes"
         },
-        "geometry": {
-            "type": "Point",
-            "coordinates": [
+        geometry: {
+            type: "Point",
+            coordinates: [
                 -9058101.08891544,
                 5036721.17612163
             ]
         },
-        "factype": "Storm Manholes"
+        factype: "Storm Manholes"
     };
+    let testManhole2 = JSON.parse('{"properties":{"WRK_REGION":"N\/A","WRK_AREA":"N/A","UNIQUEID":"ShLa20191108153127","NOTES":"","ChangeTIME":"15:31:48","Inv_Time":"15:31:27","ChangeDATE":"11-08-2019","Inv_Date":"11-08-2019","Status":"Existing","MH_ID":"","Elevation":0,"Inverts":"0","Location":"","DT_Verify":20191108,"Material":"Unassigned","Invert_1":"","Invert_2":"","Invert_3":"","Invert_4":"","Invert_5":"","Invert_6":"","Invert_7":"","Invert_8":"","FormInv":"Unassigned","Steps":"Unassigned","SolLid":"Yes"}, "geometry":{"type":"Point","coordinates":[-9058101.08891544,5036721.17612163]},"factype":"Storm Manholes"}');
 
     submitToMRK(testManhole);
 
     function submitToMRK(manhole) {
         console.log("submitting to TK");
 
+        let dataVar = {
+            // f: "json",
+            username: "rwolfe",
+            password: "1Justice!",
+            projectId: "8514", //test project id, real Kent id =1
+            key: "fedce050-04a3-11ea-945b-5740d47ce5e1", //this will be the same for real Kent and test project
+            feature: manhole 
+        }
+
         $.ajax({
             method: "POST",
             url: "https://clientapi.rowkeeper.com/api/v1/proxy/upload/feature",
             dataType: "json",
-            data: {
-                f: "json",
-                username: "rwolfe",
-                password: "1Justice!",
-                projectId: "8514", //test project id, real Kent id =1
-                key: "fedce050-04a3-11ea-945b-5740d47ce5e1", //this will be the same for real Kent and test project
-                feature: manhole
-            }
+            contentType: "application/json",
+            data: JSON.stringify(dataVar)
         })
             .done(function (msg) {
                 console.log(success);
