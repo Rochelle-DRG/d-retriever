@@ -1,0 +1,38 @@
+{
+    "properties": {
+        "WRK_REGION": "N/A",
+        "WRK_AREA": "N/A",
+        "UNIQUEID": "562ef6af-edad-4873-9721-c7805ebcc314",
+        "NOTES": "",
+        "ChangeTIME": "9:45:1",
+        "Inv_Time": "9:35:14",
+        "ChangeDATE": "9-12-2019",
+        "Inv_Date": "9-12-2019",
+        "Status": "Existing",
+        "MH_ID": "",
+        "Elevation": 0,
+        "Inverts": "0",
+        "Location": "",
+        "DT_Verify": 2040,
+        "Material": "Unassigned",
+        "Invert_1": "",
+        "Invert_2": "",
+        "Invert_3": "",
+        "Invert_4": "",
+        "Invert_5": "",
+        "Invert_6": "",
+        "Invert_7": "",
+        "Invert_8": "",
+        "FormInv": "Unassigned",
+        "Steps": "Unassigned",
+        "SolLid": null
+    },
+    "geometry": {
+        "type": "point",
+        "coordinates": [
+            -81.35159272697915,
+            41.169684699210464
+        ]
+    },
+    "factype": "Storm Manholes"
+}
