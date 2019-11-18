@@ -3,27 +3,50 @@
 
 <head>
     <title>@#RW#@</title>
-    <!-- <link rel="stylesheet" href="css/style.css"> -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <!-- <div id="div1">
-        <h2>Let jQuery AJAX Change This Text</h2>
+    <div id="aG_login">
+        <input type="text" id="aG_username" placeholder="ArcGIS Online Username"><br />
+        <input type="password" id="aG_password" placeholder="ArcGIS Online Password"><br />
+        <div id="logintoArcGIS">Login to ArcGIS Online</div>
     </div>
-    <a id="sign-in" href="">Sign
-        In With ArcGIS Online In This Same Window</a> -->
-    <!-- <br /><br />
-    <button id="get-data">Get Temporary Access Token</button> -->
-        <br /><br />
-    <button id="get-test-data">Click here to get data from public TEST source</button>
+
+    <div id="select-a-proj">Select a Project
+        <select id="project-select">
+            <option
+                value="https://services3.arcgis.com/kwmUh9MJciUcuce3/ArcGIS/rest/services/KSU_DrainsLocation/FeatureServer/">
+                Kent Stormwater Project
+            </option>
+        </select><button id="select-proj-button">Search Layers</button>
+    </div>
+
+    <div id="select-a-layer">Select a Layer
+        <select id="layer-select">
+            
+        </select><button id="select-layer-button">Display Layer</button>
+        <p id="display-collect-layer"></p>
+    </div>
+
+
     <br /><br />
-    <button id="get-data">Click here to get data from Kent Storm Manholes</button>
+    <div id="mrk" class="hide">
+        <div id="mRK_login">
+            <input type="text" id="mRK_username" placeholder="MRK Username"><br />
+            <input type="password" id="mRK_password" placeholder="MRK Password"><br />
+        </div>
+        <br />
+        <button id="get-data">Click here to get data from Kent Storm Manholes</button>
+    </div>
     <br /><br />
-    <p id="message">Hello.</p>
-    <ul id= "failures">Failed Uploads
+    <div id="messages">
+        <p id="message">Hello.</p>
+    </div>
+    <ul id="failures">Failed Uploads
 
     </ul>
-    <ul id= "successes">Successful Uploads
+    <ul id="successes">Successful Uploads
 
     </ul>
 

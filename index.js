@@ -1,6 +1,5 @@
 console.log("index loaded");
 $(document).ready(function () {
-    console.log("document ready, jquery working");
 
     /**#######################   LOGGING IN TO COLLECTOR    #########################**/
     //~~~~remember my username Rochelle.Wolfe_DRGPartner
@@ -46,41 +45,102 @@ $(document).ready(function () {
     //     });
 
     /**## This will return an access token without the user logging in (uses my credentials and our project) ##**/
-    messageDiv.innerHTML = "Logging you in";
-    $("#div1").load("demo_test.txt");
-    $.ajax({
-        method: "POST",
-        url: "https://www.arcgis.com/sharing/rest/generateToken",
-        dataType: "json",
-        data: {
-            f: "json",
-            username: "Rochelle.Wolfe_DRGPartner",
-            password: "1Justice!",
-            referer: "http://localhost:5500/"
-        }
-    })
-        .done(function (msg) {
-            // console.log(msg);
-            // messageDiv.innerHTML = "access token is : <br/>" + msg.token
-            token = msg.token;
-            messageDiv.innerHTML = "Okay, we're logged in to ArcGIS Online.";
+    $("#logintoArcGIS").click(function () {
+        let ag_username = document.getElementById("aG_username").value;
+        let ag_password = document.getElementById("aG_password").value;
+        loginToArcIGSWithUsernameAndPass(ag_username, ag_password);
+    }) //end $("#logintoArcGIS").click
+
+    function loginToArcIGSWithUsernameAndPass(username, pass) {
+        messageDiv.innerHTML = "Logging you in";
+        $("#div1").load("demo_test.txt");
+        $.ajax({
+            method: "POST",
+            url: "https://www.arcgis.com/sharing/rest/generateToken",
+            dataType: "json",
+            data: {
+                f: "json",
+                username: ag_username,
+                password: ag_password,
+                referer: "http://localhost:5500/"
+            }
         })
-        .fail(function (jqXHR, textStatus) {
-            alert("Request failed: " + textStatus);
-            messageDiv.innerHTML = "Ut-oh, login failed. Try clicking the login link.";
-        });
+            .done(function (msg) {
+                token = msg.token;
+                messageDiv.innerHTML = "Okay, we're logged in to ArcGIS Online.";
+                document.getElementById("aG_login").style.visibility = "hidden";
+            })
+            .fail(function (jqXHR, textStatus) {
+                alert("Request failed: " + textStatus);
+                messageDiv.innerHTML = "Ut-oh, login failed. Try clicking the login link.";
+            });
+    }; //end loginToArcIGSWithUsernameAndPass(username, pass)
+
+        /*For Development purposes I am skipping the click to login */
+        let ag_username = "Rochelle.Wolfe_DRGPartner";
+        let ag_password = "1Justice!";
+        loginToArcIGSWithUsernameAndPass(ag_username, ag_password);
+
+
+    /**#######################   GETTING USER LAYER INFO    #########################**/
+    $("#select-proj-button").click(function () {
+        messageDiv.innerHTML ="Getting Layers for "+ document.getElementById("project-select").innerHTML;
+        let projectLayersURL = document.getElementById("project-select").value + "layers";
+        $.ajax({
+            method: "POST",
+            url: projectLayersURL,
+            dataType: "json",
+            data: {
+                f: "json",
+                where: "1=1",
+                outSr: "4326",
+                outfields: "*"
+            }
+            // token: token, 
+        }) //end .ajax
+            .done(function (msg) {
+                messageDiv.innerHTML ="We have retrieved the project layers.";
+                removeAllLayerOptions();
+                for (let i=0; i<msg.layers.length; i++){
+                    addCollectorLayerOption(msg.layers[i]);
+                }
+                $("#select-layer-button").click(function () {
+                    let displayLayerNode = document.getElementById("display-collect-layer");
+                    let layerId = document.getElementById("layer-select").value;
+                    displayLayerNode.innerText = JSON.stringify(msg.layers[layerId].fields);
+                    console.log(msg.layers[layerId].fields);
+                });
+            })
+            .fail(function (jqXHR, textStatus){
+                addMessage("Failed to retrieve the list of layers.");
+            });
+    });//end #user-layers .click
+
+    
+
+    function addCollectorLayerOption(layer) {
+        let layersNode = document.getElementById("layer-select");
+        let newLayer = document.createElement("option");
+        newLayer.innerText = layer.name;
+        newLayer.value = layer.id;
+        layersNode.appendChild(newLayer);
+    };
+    function removeAllLayerOptions(){
+        let layersNode = document.getElementById("layer-select");
+        while (layersNode.hasChildNodes()){
+            layersNode.removeChild(layersNode.firstChild);
+        }  
+    }
+
 
     /**#######################   GETTING DATA FROM COLLECTOR    #########################**/
 
     /** Query ALL the features from the Kent Stormwater */
     $("#get-data").click(function () {
-        messageDiv.innerHTML = "Let's get some data";
+        addMessage("Let's get some data");
         $.ajax({
             method: "POST",
             url: "https://services3.arcgis.com/kwmUh9MJciUcuce3/arcgis/rest/services/MyMapService/FeatureServer/0/query?token=" + token,
-            // url: "https://services3.arcgis.com/kwmUh9MJciUcuce3/arcgis/rest/services/MyMapService/FeatureServer/0/query?token=g6SmFR5yRa07hhE7Rn5UzNBK8YghiP9oixoMnIrN8_hpA3G42asSjxgl0e5wjJeRXUSjlQNx087st9EFE68wVtRMAUDmpkyaJHLW8vN7SRDZpvw9lTm-jwUCvzkKWrNsJ6wR-t3nn2dG9yCcJDnSCp9ziB_krdlVlyUpvz82iWyEpzhMPyAFlDINWSlZeY2Y60_YPFj58u3SEbyu4XzIw5_jBsCvPe6myJGb4eL1wf0hu8ZHtcPFAZ9ITMGZeTKH",
-            // url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0/query",
-            // token: token,
             dataType: "json",
             data: {
                 // returnCountOnly: "true",
@@ -89,40 +149,23 @@ $(document).ready(function () {
                 where: "OBJECTID > 0",
                 outSr: "4326",
                 outfields: "*"
-                // outfields: "OBJECTID,Site_Status,Manhole_Number,StreetName"
             }
         }) //end .ajax
             .done(function (msg) {
-                // console.log(msg);
-                messageDiv.innerHTML = "We have retrieved the data from collector. ";
-                console.log();
+                addMessage("We have retrieved the data from collector. ");
+                addMessage("Submitting to MRK. ");
                 var jsonInfoAsString = JSON.stringify(msg.features);
-                // messageDiv.innerHTML = "Data: <br>" + jsonInfoAsString;
-                // messageDiv.innerHTML = "Data (string) length: <br>" + jsonInfoAsString.length;
-                // messageDiv.innerHTML = "Data : <br>" + JSON.stringify(msg.features[0]);
-                // messageDiv.innerHTML = "Data: <br>" + JSON.stringify(msg.features[0].attributes.OBJECTID);
-                // messageDiv.innerHTML = "Data: <br>" + msg.features[1].attributes.OBJECTID; //successfully returns the property
 
                 /** For each manhole */
                 for (let i = 0; i < msg.features.length; i++) {
-                // for (let i = 0; i < 11; i++) {
-    
                     let stormManhole = makeManhole(msg.features[i]); //returns MRK-ready manhole object
-                    submitToMRK(stormManhole, i);
-                    // console.log(msg.features[i].attributes.OBJECTID+" : "+msg.features[i].attributes.GlobalID);
+                    // submitToMRK(stormManhole, i);
                 }//end For
-                // // /** TEST TEST TEST */
-                // let stormManholeTest = makeManhole(msg.features[7]); //returns MRK-ready manhole object
-                // // messageDiv.innerHTML = JSON.stringify(msg.features[1]) +"<br/><br/>"+JSON.stringify(msg.features[0])+"<br/><br/>"+JSON.stringify(msg.features[2]);
-                // messageDiv.innerHTML = "What I made: <br/>"+JSON.stringify(stormManholeTest) +"<br/><br/>"+"What Collector gave me: <br/>"+JSON.stringify(msg.features[7]) ;
-
-                // submitToMRK(stormManholeTest);
             })
             .fail(function (jqXHR, textStatus) {
                 alert("Request failed: " + textStatus);
                 messageDiv.innerHTML = "Ut-oh, data fetch failed.";
             });
-        messageDiv.innerHTML = "Working on it";
     });//end on clicking get-data button
 
 
@@ -158,86 +201,54 @@ $(document).ready(function () {
                 FormInv: nullToUnassigned(collectedManhole.attributes.FormedInvert),
                 Steps: nullToUnassigned(collectedManhole.attributes.Steps),
                 SolLid: nullToString(collectedManhole.attributes.SolidLid)
-
-                // ,UNIQUEID: "ShLa20191108153127",
-                // NOTES: "",
-                // ChangeTIME: "15:31:48",
-                // Inv_Time: "15:31:27",
-                // ChangeDATE: "11-08-2019",
-                // Inv_Date: "11-08-2019",
-                // Status: "Existing",
-                // MH_ID: "",
-                // Elevation: 0,
-                // Inverts: "0",
-                // Location: "",
-                // DT_Verify: 20191108,
-                // Material: "Unassigned",
-                // Invert_1: "",
-                // Invert_2: "",
-                // Invert_3: "",
-                // Invert_4: "",
-                // Invert_5: "",
-                // Invert_6: "",
-                // Invert_7: "",
-                // Invert_8: "",
-                // FormInv: "Unassigned",
-                // Steps: "Unassigned",
-                // SolLid: "Yes"
-    
             },
             geometry: {
                 type: "point",
                 coordinates: [
                     collectedManhole.geometry.x,
                     collectedManhole.geometry.y,
-
-                    // -9058101.08891544,
-                    // 5036721.17612163
-    
                 ]
             },
             factype: "Storm Manholes"
-
         };
-
         return manhole;
     }; // end makeManhole
 
     function formatDate(collectorDate) {
         let d = new Date(collectorDate);
-        let formattedDate = ( "0"+(d.getMonth()+1) ).slice(-2) + "-" + ( "0"+d.getDate() ).slice(-2) + "-" + d.getFullYear();
+        let formattedDate = ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2) + "-" + d.getFullYear();
         return formattedDate;
     };
     function formatTime(collectorDate) {
         let d = new Date(collectorDate);
-        let formattedTime = ( "0"+(d.getHours()) ).slice(-2) + ":" + ( "0"+(d.getMinutes()) ).slice(-2) + ":" + ( "0"+(d.getSeconds()) ).slice(-2);
+        let formattedTime = ("0" + (d.getHours())).slice(-2) + ":" + ("0" + (d.getMinutes())).slice(-2) + ":" + ("0" + (d.getSeconds())).slice(-2);
         return formattedTime;
     };
-    function formatDTVerify(collectorDate){
+    function formatDTVerify(collectorDate) {
         let d = new Date(collectorDate);
-        let formattedDate = d.getFullYear() + "" + ( "0"+(d.getMonth()+1) ).slice(-2) + "" + ( "0"+d.getDate() ).slice(-2);
+        let formattedDate = d.getFullYear() + "" + ("0" + (d.getMonth() + 1)).slice(-2) + "" + ("0" + d.getDate()).slice(-2);
         return Number(formattedDate);
     };
-    function nullToString(value){
-        if (value === null){
+    function nullToString(value) {
+        if (value === null) {
             return "";
         }
         else return value;
     };
-    function convertNullElevation(value){
-        if (value === null){
+    function convertNullElevation(value) {
+        if (value === null) {
             return 0;
         }
         else return value;
     };
-    function convertNumInverts(value){
-        if (value === null){
+    function convertNumInverts(value) {
+        if (value === null) {
             return "0";
         }
         else return value;
     };
-    function nullToUnassigned(value){
-        if (value === null){
+    function nullToUnassigned(value) {
+        if (value === null) {
             return "Unassigned";
         }
         else return value;
@@ -247,58 +258,20 @@ $(document).ready(function () {
 
     /**#######################   SUBMITTING DATA TO MRK    #########################**/
 
-    // let testManhole = {
-    //     properties: {
-    //         WRK_REGION: "N\/A",
-    //         WRK_AREA: "N/A",
-    //         UNIQUEID: "ShLa20191108153127",
-    //         NOTES: "",
-    //         ChangeTIME: "15:31:48",
-    //         Inv_Time: "15:31:27",
-    //         ChangeDATE: "11-08-2019",
-    //         Inv_Date: "11-08-2019",
-    //         Status: "Existing",
-    //         MH_ID: "",
-    //         Elevation: 0,
-    //         Inverts: "0",
-    //         Location: "",
-    //         DT_Verify: 20191108,
-    //         Material: "Unassigned",
-    //         Invert_1: "",
-    //         Invert_2: "",
-    //         Invert_3: "",
-    //         Invert_4: "",
-    //         Invert_5: "",
-    //         Invert_6: "",
-    //         Invert_7: "",
-    //         Invert_8: "",
-    //         FormInv: "Unassigned",
-    //         Steps: "Unassigned",
-    //         SolLid: "Yes"
-    //     },
-    //     geometry: {
-    //         type: "Point",
-    //         coordinates: [
-    //             -9058101.08891544,
-    //             5036721.17612163
-    //         ]
-    //     },
-    //     factype: "Storm Manholes"
-    // };
-    // let testManhole2 = JSON.parse('{"properties":{"WRK_REGION":"N\/A","WRK_AREA":"N/A","UNIQUEID":"ShLa20191108153127","NOTES":"","ChangeTIME":"15:31:48","Inv_Time":"15:31:27","ChangeDATE":"11-08-2019","Inv_Date":"11-08-2019","Status":"Existing","MH_ID":"","Elevation":0,"Inverts":"0","Location":"","DT_Verify":20191108,"Material":"Unassigned","Invert_1":"","Invert_2":"","Invert_3":"","Invert_4":"","Invert_5":"","Invert_6":"","Invert_7":"","Invert_8":"","FormInv":"Unassigned","Steps":"Unassigned","SolLid":"Yes"}, "geometry":{"type":"Point","coordinates":[-9058101.08891544,5036721.17612163]},"factype":"Storm Manholes"}');
-
-    // submitToMRK(testManhole2);
-
     function submitToMRK(manhole, manNum) {
-        messageDiv.innerHTML = "Submitting number "+manNum+" to MRK";
+        let mrkUser = document.getElementById("mRK_username").value;
+        let mrkPass = document.getElementById("mRK_password").value;
+        /**##$$ FOR DEVELOPMENT SHORTCUT$$##**/
+        // mrkUser = "rwolfe";
+        // mrkPass = "1Justice!";
 
         let dataVar = {
             // f: "json",
-            username: "rwolfe",
-            password: "1Justice!",
+            username: mrkUser,
+            password: mrkPass,
             projectId: "8514", //test project id, real Kent id =1
             key: "fedce050-04a3-11ea-945b-5740d47ce5e1", //this will be the same for real Kent and test project
-            feature: manhole 
+            feature: manhole
         }
 
         $.ajax({
@@ -309,7 +282,7 @@ $(document).ready(function () {
             data: JSON.stringify(dataVar)
         })
             .done(function (msg) {
-                messageDiv.innerHTML = "Success for number: "+ manNum;
+                // addMessage("Success for number: " + manNum);
                 displaySuccess(manhole, manNum);
 
             })
@@ -317,28 +290,31 @@ $(document).ready(function () {
                 console.log("Submit request failed: " + textStatus);
                 console.log(manNum);
                 console.log(manhole);
-                messageDiv.innerHTML = "Ut-oh, submitting failed. "+ textStatus;
+                messageDiv.innerHTML = "Ut-oh, submitting failed. " + textStatus;
                 displayFailed(manhole, manNum);
             })
 
 
 
     }
-/**#######################   DISPLAYING SUCCESS OR FAIL RESULTS    #########################**/
+    /**#######################   DISPLAYING SUCCESS OR FAIL RESULTS    #########################**/
     var failNode = document.getElementById("failures");
     var sNode = document.getElementById("successes");
+    var msgNode = document.getElementById("messages");
 
-    function displayFailed(manhole, number){
+    function displayFailed(manhole, number) {
         let failLI = document.createElement("li");
         failLI.innerText = number + ": " + JSON.stringify(manhole);
         failNode.appendChild(failLI);
     };
-
-    function displaySuccess(manhole, number){
+    function displaySuccess(manhole, number) {
         let successLI = document.createElement("li");
         successLI.innerText = number + ": " + JSON.stringify(manhole);
         sNode.appendChild(successLI);
     };
-
-
+    function addMessage(message){
+        let newMsgP = document.createElement("P");
+        newMsgP.innerText = message;
+        msgNode.appendChild(newMsgP);
+    };
 });//end document ready
