@@ -4,6 +4,7 @@ $(document).ready(function () {
     /**#######################   LOGGING IN TO COLLECTOR    #########################**/
     //~~~~remember my username Rochelle.Wolfe_DRGPartner
     var token;
+    var mrkToken;
     var messageDiv = document.getElementById('message')
 
     /**Kent Ohio Stormwater sample argis app that Holly made */
@@ -76,15 +77,15 @@ $(document).ready(function () {
             });
     }; //end loginToArcIGSWithUsernameAndPass(username, pass)
 
-        /*For Development purposes I am skipping the click to login */
-        let ag_username = "Rochelle.Wolfe_DRGPartner";
-        let ag_password = "1Justice!";
-        loginToArcIGSWithUsernameAndPass(ag_username, ag_password);
+    /*For Development purposes I am skipping the click to login */
+    let ag_username = "Rochelle.Wolfe_DRGPartner";
+    let ag_password = "1Justice!";
+    loginToArcIGSWithUsernameAndPass(ag_username, ag_password);
 
 
     /**#######################   GETTING USER LAYER INFO    #########################**/
     $("#select-proj-button").click(function () {
-        messageDiv.innerHTML ="Getting Layers for "+ document.getElementById("project-select").innerHTML;
+        messageDiv.innerHTML = "Getting Layers for " + document.getElementById("project-select").innerHTML;
         let projectLayersURL = document.getElementById("project-select").value + "layers?token=" + token;
         $.ajax({
             method: "POST",
@@ -99,24 +100,25 @@ $(document).ready(function () {
             // token: token, 
         }) //end .ajax
             .done(function (msg) {
-                messageDiv.innerHTML ="We have retrieved the project layers.";
+                messageDiv.innerHTML = "We have retrieved the project layers.";
                 removeAllLayerOptions();
-                for (let i=0; i<msg.layers.length; i++){
+                for (let i = 0; i < msg.layers.length; i++) {
                     addCollectorLayerOption(msg.layers[i]);
                 }
                 $("#select-layer-button").click(function () {
                     let displayLayerNode = document.getElementById("display-collect-layer");
                     let layerId = document.getElementById("layer-select").value;
-                    displayLayerNode.innerText = JSON.stringify(msg.layers[layerId].fields);
-                    console.log(msg.layers[layerId].fields);
+                    messageDiv.innerHTML = "This layer has " + msg.layers[layerId].fields.length + " fields. Next step loging to MRK and select they layer to send data to.";
+                    document.getElementById("mrk").classList.toggle("hide");
+
                 });
             })
-            .fail(function (jqXHR, textStatus){
+            .fail(function (jqXHR, textStatus) {
                 addMessage("Failed to retrieve the list of layers.");
             });
     });//end #user-layers .click
 
-    
+
 
     function addCollectorLayerOption(layer) {
         let layersNode = document.getElementById("layer-select");
@@ -125,52 +127,104 @@ $(document).ready(function () {
         newLayer.value = layer.id;
         layersNode.appendChild(newLayer);
     };
-    function removeAllLayerOptions(){
+    function removeAllLayerOptions() {
         let layersNode = document.getElementById("layer-select");
-        while (layersNode.hasChildNodes()){
+        while (layersNode.hasChildNodes()) {
             layersNode.removeChild(layersNode.firstChild);
-        }  
+        }
     }
 
 
-    /**#######################   GETTING DATA FROM COLLECTOR    #########################**/
+    /**#######################   GETTING DATA FROM COLLECTOR AND CALLING ADD TO MRK FUNCTION ON EACH FACILITY    #########################**/
 
     /** Query ALL the features from the Kent Stormwater */
-    $("#get-data").click(function () {
-        addMessage("Let's get some data");
+    // $("#get-data").click(function () {
+    //     addMessage("Let's get some data");
+    //     $.ajax({
+    //         method: "POST",
+    //         url: "https://services3.arcgis.com/kwmUh9MJciUcuce3/arcgis/rest/services/MyMapService/FeatureServer/0/query?token=" + token,
+    //         dataType: "json",
+    //         data: {
+    //             // returnCountOnly: "true",
+    //             f: "json",
+    //             // where: "1=1",
+    //             where: "OBJECTID > 0",
+    //             outSr: "4326",
+    //             outfields: "*"
+    //         }
+    //     }) //end .ajax
+    //         .done(function (msg) {
+    //             addMessage("We have retrieved the data from collector. ");
+    //             addMessage("Submitting to MRK. ");
+    //             var jsonInfoAsString = JSON.stringify(msg.features);
+
+    //             /** For each manhole */
+    //             for (let i = 0; i < msg.features.length; i++) {
+    //                 let stormManhole = makeManhole(msg.features[i]); //returns MRK-ready manhole object
+    //                 // submitToMRK(stormManhole, i);
+    //             }//end For
+    //         })
+    //         .fail(function (jqXHR, textStatus) {
+    //             alert("Request failed: " + textStatus);
+    //             messageDiv.innerHTML = "Ut-oh, data fetch failed.";
+    //         });
+    // });//end on clicking get-data button
+
+
+    /**#######################   LOGIN TO MRK AND GET TOKEN    #########################**/
+
+    $("#mRK-login-button").click(function () {
+        let mrkUser = document.getElementById("mRK_username").value;
+        let mrkPass = document.getElementById("mRK_password").value;
+        let projId = document.getElementById("proj-id").value;
+        /**##$$ FOR DEVELOPMENT SHORTCUT$$##**/
+        mrkUser = "rwolfe";
+        mrkPass = "1Justice!";
         $.ajax({
             method: "POST",
-            url: "https://services3.arcgis.com/kwmUh9MJciUcuce3/arcgis/rest/services/MyMapService/FeatureServer/0/query?token=" + token,
+            url: "https://www.daveyresourcekeeper.com/api/v2/login",
             dataType: "json",
-            data: {
-                // returnCountOnly: "true",
-                f: "json",
-                // where: "1=1",
-                where: "OBJECTID > 0",
-                outSr: "4326",
-                outfields: "*"
-            }
-        }) //end .ajax
-            .done(function (msg) {
-                addMessage("We have retrieved the data from collector. ");
-                addMessage("Submitting to MRK. ");
-                var jsonInfoAsString = JSON.stringify(msg.features);
+            contentType: "application/json",
+            data: '{"name": "' + mrkUser.trim() + '", "password": "' + mrkPass + '", "project": '+ projId + '}'
+        })
+            .done(function (msg){
+                addMessage("Successful login to MRK");
+                // addMessage(JSON.stringify(msg)); //returns {"id":1519,"username":"rwolfe","projectName":"Kent","projectURL":"http://kentohrochelletest.daveytreekeeper.com","databaseName":"postgresql_kentOH_rochelletest","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxNTE5LCJ1c2VybmFtZSI6InJ3b2xmZSIsImVtYWlsIjoicm9jaGVsbGUud29sZmVAZGF2ZXkuY29tIiwiZmlyc3RfbmFtZSI6IlJvY2hlbGxlIiwibGFzdF9uYW1lIjoiV29sZmUgKERSRykiLCJwYXNzd29yZCI6IjhGQzU1NDQ4QkVFMDExNEI1OTc0NERFMTdCMjgwM0VBMDIwQjg5ODZDOEQ4QURBRDg2ODZENjU2MTNGMEQ5RDM5N0NCMUM1MUVBNzEyQjcxODBBQTQ4RjMxRjIxOUM3NTY0QUE3Mzc2RDFCQUQ2REYyMTQzOERDQThBNjExNUVGIiwiaW5pdGlhbHMiOiJSb1dvIiwibGV2ZWwiOjN9LCJwcm9qZWN0Ijp7ImlkIjo4NTE0LCJuYW1lIjoiS2VudCIsImRiX25hbWUiOiJwb3N0Z3Jlc3FsX2tlbnRPSF9yb2NoZWxsZXRlc3QiLCJ1cmwiOiJodHRwOi8va2VudG9ocm9jaGVsbGV0ZXN0LmRhdmV5dHJlZWtlZXBlci5jb20iLCJob3N0aXAiOiIxMC4zLjEuMTUifSwiaWF0IjoxNTc0MTk1ODgyLCJleHAiOjE1NzQyMDMwODJ9.cs_7npoh42yCjwMdrN2CNpOQfrzr5lE_qCjsrSTmIms","initials":"RoWo","level":3}
+                // console.log(msg);
+                mrkToken = msg.token;
+                console.log(mrkToken);
+                document.getElementById("mrk").classList.toggle("hide");
+                document.getElementById("select-mrk-proj").classList.toggle("hide");
 
-                /** For each manhole */
-                for (let i = 0; i < msg.features.length; i++) {
-                    let stormManhole = makeManhole(msg.features[i]); //returns MRK-ready manhole object
-                    // submitToMRK(stormManhole, i);
-                }//end For
+                /**Get & Generate list of layers **/
+                $.ajax({
+                    method: "GET",
+                    url: "https://www.daveyresourcekeeper.com/api/v2/projects/"+projId,
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        token: mrkToken
+                    })
+                })
+                    .done(function(msg){
+                        addMessage("successfully gathered list of MRK layers for this project");
+                        console.log(msg);
+                    })
+                    .fail(function (jqXHR, textStatus){
+                        addMessage("there was a problem gathering the layers list for this MRK project.");
+                        console.log(textStatus);
+                    })
+
             })
             .fail(function (jqXHR, textStatus) {
-                alert("Request failed: " + textStatus);
-                messageDiv.innerHTML = "Ut-oh, data fetch failed.";
-            });
-    });//end on clicking get-data button
+                console.log("Login to MRK Failed.");
+                addMessage("Login to MRK failed.");
+            })
+    }); //end mRK-login-button .click
+
 
 
     /**#######################   FORMATTING COLLECTOR DATA FOR MRK    #########################**/
-
 
     function makeManhole(collectedManhole) {
         let manhole = {
@@ -312,7 +366,7 @@ $(document).ready(function () {
         successLI.innerText = number + ": " + JSON.stringify(manhole);
         sNode.appendChild(successLI);
     };
-    function addMessage(message){
+    function addMessage(message) {
         let newMsgP = document.createElement("P");
         newMsgP.innerText = message;
         msgNode.appendChild(newMsgP);

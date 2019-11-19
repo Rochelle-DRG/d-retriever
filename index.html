@@ -15,10 +15,6 @@
 
     <div id="select-a-proj">Select a Project
         <select id="project-select">
-            <!-- <option
-                value="https://services3.arcgis.com/kwmUh9MJciUcuce3/ArcGIS/rest/services/KSU_DrainsLocation/FeatureServer/">
-                Kent Stormwater Project
-            </option> -->
             <option
                 value="https://services3.arcgis.com/kwmUh9MJciUcuce3/arcgis/rest/services/MyMapService/FeatureServer/">
                 Kent Stormwater Project
@@ -40,9 +36,21 @@
         <div id="mRK_login">
             <input type="text" id="mRK_username" placeholder="MRK Username"><br />
             <input type="password" id="mRK_password" placeholder="MRK Password"><br />
+            <select id="proj-id">
+                <option value="8514">Kent Test Collector</option>
+            </select>
         </div>
         <br />
-        <button id="get-data">Click here to get data from Kent Storm Manholes</button>
+        <button id="mRK-login-button">Login to MRK</button>
+
+        
+        <!-- <button id="get-data">Click here to get data from Kent Storm Manholes</button> -->
+    </div>
+    <div id="select-mrk-proj" class="hide">Select a Project
+        <select id="mrk-project-select">
+            
+
+        </select><button id="select-mrk-proj-button">Search Layers</button>
     </div>
     <br /><br />
     <div id="messages">

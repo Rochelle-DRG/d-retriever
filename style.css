@@ -1,3 +1,8 @@
+  body{
+    /* display: grid;
+    grid-template-columns: 5fr 20fr 20fr 10fr 20fr 20fr 5fr; */
+  }
+  
   .hide {
     display: none;
   }
