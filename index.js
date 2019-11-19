@@ -85,7 +85,7 @@ $(document).ready(function () {
     /**#######################   GETTING USER LAYER INFO    #########################**/
     $("#select-proj-button").click(function () {
         messageDiv.innerHTML ="Getting Layers for "+ document.getElementById("project-select").innerHTML;
-        let projectLayersURL = document.getElementById("project-select").value + "layers";
+        let projectLayersURL = document.getElementById("project-select").value + "layers?token=" + token;
         $.ajax({
             method: "POST",
             url: projectLayersURL,
