@@ -215,17 +215,23 @@ $(document).ready(function () {
             }
         })
             .done(function (msg) {
-                addMessage("successfully gathered list of MRK layers for this project");
+                addMessage("Successfully gathered list of MRK layers for this project.");
                 console.log(msg);
                 console.log(msg.data.layers);
                 let layers = msg.data.layers;
+                /** Adds each layer to the dropdown options*/
                 let mrkLayersNode = document.getElementById("mrk-layer-select");
                 for (let i = 0; i < layers.length; i++) {
                     let newLayer = document.createElement("option");
                     newLayer.innerText = layers[i].name;
-                    newLayer.value = layers[i].id;
+                    newLayer.value = i;
                     mrkLayersNode.appendChild(newLayer);
                 }
+                $("#select-mrk-layer-button").click (function () {
+                    let selectedLayer = document.getElementById("mrk-layer-select").value;
+                    displayMRKAttributes(msg.data.layers[selectedLayer]);
+                })
+            
             })
             .fail(function (jqXHR, textStatus) {
                 addMessage("there was a problem gathering the layers list for this MRK project.");
@@ -233,8 +239,16 @@ $(document).ready(function () {
             })
     }
     /**#######################   VIEW ATTRIBUTES FROM MRK LAYER    #########################**/
-
-
+    function displayMRKAttributes(layer){
+        let attrListNode = document.getElementById("mrk-attributes");
+        let mrkAttrTypes = ["null", "species", "integer", "boolean", "string-from-list" , "string", "date"];
+        for (let i = 0; i<layer.attributes.length; i++){
+            let attr = layer.attributes[i];
+            let attTD = document.createElement("td");
+            attTD.innerText = JSON.stringify({Name: attr.name, Type: mrkAttrTypes[attr.attributes_type_id], Abbrev: attr.abbrev});
+            attrListNode.appendChild(attTD); 
+        }
+    }
 
 
     /**#######################   FORMATTING COLLECTOR DATA FOR MRK    #########################**/
@@ -380,8 +394,9 @@ $(document).ready(function () {
         sNode.appendChild(successLI);
     };
     function addMessage(message) {
-        let newMsgP = document.createElement("P");
-        newMsgP.innerText = message;
-        msgNode.appendChild(newMsgP);
+        // let newMsgP = document.createElement("P");
+        // newMsgP.innerText = message;
+        // msgNode.appendChild(newMsgP);
+        messageDiv.innerHTML = message;
     };
 });//end document ready
