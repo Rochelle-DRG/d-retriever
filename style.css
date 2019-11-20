@@ -1,59 +1,21 @@
-  /* body{
-    display: grid;
-    grid-template-columns: [leftoutside] 1fr [firstline-L] 4fr [secondline-L] 4fr [thirdline-L] 2fr [firstline-R] 4fr [secondline-R] 4fr [thirdline-R] 1fr [rightoutside];
-    grid-template-rows: 200px auto;
-  }
-  .headertext {
-    grid-area: header;
-  }
-  .logo-img {
-    grid-area: logo;
-  }
-  .collect-head {
-    grid-area: collecthead;
-  }
-  .arrow {
-    grid-area: arrow;
-  }
-  .mrkhead {
-    grid-area: mrkhead;
-  }
-  .msg {
-    grid-area: msg;
-  }
-  .collect {
-    grid-area: collect;
-  }
-  .mrk {
-    grid-area: mrk;
-  }
-  .container{
-    display: grid;
-    grid-template-columns: 1fr 4fr 4fr 2fr 4fr 4fr 1fr;
-    grid-template-rows: 300px 300px auto auto auto;
-    grid-template-areas: 
-      ". header      header      header    .       logo    ."
-      ". collecthead collecthead arrow     mrkhead mrkhead ."
-      ". msg          msg         msg        msg     msg   ."
-      ". collect     collect     translate mrk     mrk     ."
-  } */
 
+/*####  Grid  ####*/
   .container {
     display: grid;
-    grid-template-columns: 150px auto 150px;
-    grid-template-rows: repeat(3, 100px);
+    grid-template-columns: auto 200px auto;
+    /* grid-template-rows: repeat(3, 100px); */
     grid-gap: 1em;
   }
-  header, aside, article, footer {
+  header, aside, article, footer, assignment {
     background: #eaeaea;
     padding: 1em;
   }
-  header, footer {
+  header, footer, assignment {
     grid-column: 1 / 4;
   }
   body {
     margin: 0 auto;
-    max-width: 56em;
+    max-width: 80%;
     padding: 1em 0;
   }
   
@@ -65,5 +27,18 @@
 /* Begin my styles*/
   .hide {
     display: none;
+  }
+  .header {
+    position: relative;
+    text-align: center;
+    color: black;
+  }
+  #message {
+    position: absolute;
+    top: 60px;
+    left: 800px;
+    font-family: 'Courier New', Courier, monospace;
+    /* transform: translate(-50%, -50%); */
+    width: 400px;
   }
  

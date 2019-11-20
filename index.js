@@ -108,7 +108,7 @@ $(document).ready(function () {
                 $("#select-layer-button").click(function () {
                     let displayLayerNode = document.getElementById("display-collect-layer");
                     let layerId = document.getElementById("layer-select").value;
-                    messageDiv.innerHTML = "This layer has " + msg.layers[layerId].fields.length + " fields. Next step loging to MRK and select they layer to send data to.";
+                    messageDiv.innerHTML = "This layer has " + msg.layers[layerId].fields.length + " fields. Next step logging to MRK and select they layer to send data to.";
                     document.getElementById("mrk").classList.toggle("hide");
 
                 });

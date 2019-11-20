@@ -2,80 +2,96 @@
 <html lang="en">
 
 <head>
-    <title>@#RW#@</title>
+    <title>~RETRIEVER~</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="container">
-    <h1 class="headertext">Davey Retriever</h1>
-    <img class="logo-img" src="images/dog-computer.jpg" alt="labrador retriever">
-    <h2 class="collect-head">Collector</h2>
-    <img class="arrow" src="images/right-arrow2.png" alt="arrow pointing right">
-    <h2 class="mrkhead">MyRowKeeper</h2>
+    <header class="header">
+        <img src="images/daveyRetrieverHead.png" alt="">
+        <p id="message">Woof! Welcome! Start by logging in to Collector.</p>
+    </header>
+    <!--ROW ONE AFTER HEADER-->
+    <aside class="sidebar-left">
+        <h2>Collector</h2>
+    </aside>
 
-    <div class="collect">
-        <div id="aG_login">
-            <input type="text" id="aG_username" placeholder="ArcGIS Online Username"><br />
-            <input type="password" id="aG_password" placeholder="ArcGIS Online Password"><br />
-            <div id="logintoArcGIS">Login to ArcGIS Online</div>
+    <article>
+        <img src="images/right-arrow2.png" alt="arrow pointing right">
+    </article>
+
+    <aside class="sidebar-right">
+        <h2>MyRowKeeper</h2>
+    </aside>
+    <!--ROW TWO-->
+    <aside class="sidebar-left">
+        <div class="collect">
+            <div id="aG_login">
+                <input type="text" id="aG_username" placeholder="ArcGIS Online Username"><br />
+                <input type="password" id="aG_password" placeholder="ArcGIS Online Password"><br />
+                <div id="logintoArcGIS">Login to ArcGIS Online</div>
+            </div>
+            <div id="select-a-proj">Select a Project
+                <select id="project-select">
+                    <option
+                        value="https://services3.arcgis.com/kwmUh9MJciUcuce3/arcgis/rest/services/MyMapService/FeatureServer/">
+                        Kent Stormwater Project
+                    </option>
+                </select><button id="select-proj-button">Search Layers</button>
+            </div>
+            <div id="select-a-layer">Select a Layer
+                <select id="layer-select">
+                </select><button id="select-layer-button">Display Layer</button>
+                <p id="display-collect-layer"></p>
+            </div>
         </div>
-        <div id="select-a-proj">Select a Project
-            <select id="project-select">
-                <option
-                    value="https://services3.arcgis.com/kwmUh9MJciUcuce3/arcgis/rest/services/MyMapService/FeatureServer/">
-                    Kent Stormwater Project
-                </option>
-            </select><button id="select-proj-button">Search Layers</button>
+    </aside>
+
+    <article>
+    </article>
+
+    <aside class="sidebar-right">
+        <div id="mrk" class="mrk hide">
+            <div id="mRK_login">
+                <input type="text" id="mRK_username" placeholder="MRK Username"><br />
+                <input type="password" id="mRK_password" placeholder="MRK Password"><br />
+                <select id="proj-id">
+                    <option value="8514">Kent Test MRK</option>
+                </select>
+            </div>
+            <br />
+            <button id="mRK-login-button">Login to MRK</button>
         </div>
-        <div id="select-a-layer">Select a Layer
-            <select id="layer-select">
-
-            </select><button id="select-layer-button">Display Layer</button>
-            <p id="display-collect-layer"></p>
+        <div id="select-mrk-layer" class="mrk hide">Select a Layer
+            <select id="mrk-layer-select">
+            </select><button id="select-mrk-layer-button">Display Attributes</button>
         </div>
 
-    </div>
+    </aside>
+    <!--ROW THREE-->
+    <assignment>
+        Grid Here
+    </assignment>
 
-
-
-
-
-
-
-    <br /><br />
-    <div id="mrk" class="mrk hide">
-        <div id="mRK_login">
-            <input type="text" id="mRK_username" placeholder="MRK Username"><br />
-            <input type="password" id="mRK_password" placeholder="MRK Password"><br />
-            <select id="proj-id">
-                <option value="8514">Kent Test MRK</option>
-            </select>
-        </div>
-        <br />
-        <button id="mRK-login-button">Login to MRK</button>
-
-
-        <!-- <button id="get-data">Click here to get data from Kent Storm Manholes</button> -->
-    </div>
-    <div id="select-mrk-layer" class="mrk hide">Select a Layer
-        <select id="mrk-layer-select">
-
-
-        </select><button id="select-mrk-layer-button">Display Attributes</button>
-    </div>
-    <br /><br />
-    <div class="msg">
-        <div id="messages">
-            <p id="message">Hello.</p>
-        </div>
+    <!--ROW FOUR-->
+    <aside class="sidebar-left">
         <ul id="failures">Failed Uploads
-
         </ul>
+    </aside>
+
+    <article>
+    </article>
+
+    <aside class="sidebar-right">
         <ul id="successes">Successful Uploads
-
         </ul>
-    </div>
+    </aside>
 
+    <footer class="msg">
+        <div id="messages">
+            You may applaud.
+        </div>
+    </footer>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="index.js"></script>
