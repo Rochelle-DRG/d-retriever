@@ -1,8 +1,68 @@
-  body{
-    /* display: grid;
-    grid-template-columns: 5fr 20fr 20fr 10fr 20fr 20fr 5fr; */
+  /* body{
+    display: grid;
+    grid-template-columns: [leftoutside] 1fr [firstline-L] 4fr [secondline-L] 4fr [thirdline-L] 2fr [firstline-R] 4fr [secondline-R] 4fr [thirdline-R] 1fr [rightoutside];
+    grid-template-rows: 200px auto;
+  }
+  .headertext {
+    grid-area: header;
+  }
+  .logo-img {
+    grid-area: logo;
+  }
+  .collect-head {
+    grid-area: collecthead;
+  }
+  .arrow {
+    grid-area: arrow;
+  }
+  .mrkhead {
+    grid-area: mrkhead;
+  }
+  .msg {
+    grid-area: msg;
+  }
+  .collect {
+    grid-area: collect;
+  }
+  .mrk {
+    grid-area: mrk;
+  }
+  .container{
+    display: grid;
+    grid-template-columns: 1fr 4fr 4fr 2fr 4fr 4fr 1fr;
+    grid-template-rows: 300px 300px auto auto auto;
+    grid-template-areas: 
+      ". header      header      header    .       logo    ."
+      ". collecthead collecthead arrow     mrkhead mrkhead ."
+      ". msg          msg         msg        msg     msg   ."
+      ". collect     collect     translate mrk     mrk     ."
+  } */
+
+  .container {
+    display: grid;
+    grid-template-columns: 150px auto 150px;
+    grid-template-rows: repeat(3, 100px);
+    grid-gap: 1em;
+  }
+  header, aside, article, footer {
+    background: #eaeaea;
+    padding: 1em;
+  }
+  header, footer {
+    grid-column: 1 / 4;
+  }
+  body {
+    margin: 0 auto;
+    max-width: 56em;
+    padding: 1em 0;
   }
   
+  .container > * {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+/* Begin my styles*/
   .hide {
     display: none;
   }

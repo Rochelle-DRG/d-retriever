@@ -83,7 +83,7 @@ $(document).ready(function () {
     loginToArcIGSWithUsernameAndPass(ag_username, ag_password);
 
 
-    /**#######################   GETTING USER LAYER INFO    #########################**/
+    /**#######################   GETTING COLLECTOR USER LAYER INFO    #########################**/
     $("#select-proj-button").click(function () {
         messageDiv.innerHTML = "Getting Layers for " + document.getElementById("project-select").innerHTML;
         let projectLayersURL = document.getElementById("project-select").value + "layers?token=" + token;
@@ -171,7 +171,7 @@ $(document).ready(function () {
     // });//end on clicking get-data button
 
 
-    /**#######################   LOGIN TO MRK AND GET TOKEN    #########################**/
+    /**#######################   LOGIN TO MRK AND GET TOKEN, LAYERS LIST    #########################**/
 
     $("#mRK-login-button").click(function () {
         let mrkUser = document.getElementById("mRK_username").value;
@@ -185,42 +185,55 @@ $(document).ready(function () {
             url: "https://www.daveyresourcekeeper.com/api/v2/login",
             dataType: "json",
             contentType: "application/json",
-            data: '{"name": "' + mrkUser.trim() + '", "password": "' + mrkPass + '", "project": '+ projId + '}'
+            data: '{"name": "' + mrkUser.trim() + '", "password": "' + mrkPass + '", "project": ' + projId + '}'
         })
-            .done(function (msg){
+            .done(function (msg) {
                 addMessage("Successful login to MRK");
-                // addMessage(JSON.stringify(msg)); //returns {"id":1519,"username":"rwolfe","projectName":"Kent","projectURL":"http://kentohrochelletest.daveytreekeeper.com","databaseName":"postgresql_kentOH_rochelletest","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxNTE5LCJ1c2VybmFtZSI6InJ3b2xmZSIsImVtYWlsIjoicm9jaGVsbGUud29sZmVAZGF2ZXkuY29tIiwiZmlyc3RfbmFtZSI6IlJvY2hlbGxlIiwibGFzdF9uYW1lIjoiV29sZmUgKERSRykiLCJwYXNzd29yZCI6IjhGQzU1NDQ4QkVFMDExNEI1OTc0NERFMTdCMjgwM0VBMDIwQjg5ODZDOEQ4QURBRDg2ODZENjU2MTNGMEQ5RDM5N0NCMUM1MUVBNzEyQjcxODBBQTQ4RjMxRjIxOUM3NTY0QUE3Mzc2RDFCQUQ2REYyMTQzOERDQThBNjExNUVGIiwiaW5pdGlhbHMiOiJSb1dvIiwibGV2ZWwiOjN9LCJwcm9qZWN0Ijp7ImlkIjo4NTE0LCJuYW1lIjoiS2VudCIsImRiX25hbWUiOiJwb3N0Z3Jlc3FsX2tlbnRPSF9yb2NoZWxsZXRlc3QiLCJ1cmwiOiJodHRwOi8va2VudG9ocm9jaGVsbGV0ZXN0LmRhdmV5dHJlZWtlZXBlci5jb20iLCJob3N0aXAiOiIxMC4zLjEuMTUifSwiaWF0IjoxNTc0MTk1ODgyLCJleHAiOjE1NzQyMDMwODJ9.cs_7npoh42yCjwMdrN2CNpOQfrzr5lE_qCjsrSTmIms","initials":"RoWo","level":3}
-                // console.log(msg);
                 mrkToken = msg.token;
                 console.log(mrkToken);
                 document.getElementById("mrk").classList.toggle("hide");
-                document.getElementById("select-mrk-proj").classList.toggle("hide");
+                document.getElementById("select-mrk-layer").classList.toggle("hide");
 
-                /**Get & Generate list of layers **/
-                $.ajax({
-                    method: "GET",
-                    url: "https://www.daveyresourcekeeper.com/api/v2/projects/"+projId,
-                    dataType: "json",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        token: mrkToken
-                    })
-                })
-                    .done(function(msg){
-                        addMessage("successfully gathered list of MRK layers for this project");
-                        console.log(msg);
-                    })
-                    .fail(function (jqXHR, textStatus){
-                        addMessage("there was a problem gathering the layers list for this MRK project.");
-                        console.log(textStatus);
-                    })
-
+                /**@@ Get & Generate list of MRK layers @@**/
+                generateMRKLayersDropdownList();
             })
             .fail(function (jqXHR, textStatus) {
                 console.log("Login to MRK Failed.");
                 addMessage("Login to MRK failed.");
             })
     }); //end mRK-login-button .click
+
+    function generateMRKLayersDropdownList(){
+        $.ajax({
+            method: "GET",
+            url: "https://www.daveyresourcekeeper.com/api/v2/projects/configuration/?hash=",
+            dataType: "json",
+            contentType: "application/json",
+            headers: {
+                Authorization: "JWT " + mrkToken,
+                'Access-Control-Expose-Headers': "Authorization"
+            }
+        })
+            .done(function (msg) {
+                addMessage("successfully gathered list of MRK layers for this project");
+                console.log(msg);
+                console.log(msg.data.layers);
+                let layers = msg.data.layers;
+                let mrkLayersNode = document.getElementById("mrk-layer-select");
+                for (let i = 0; i < layers.length; i++) {
+                    let newLayer = document.createElement("option");
+                    newLayer.innerText = layers[i].name;
+                    newLayer.value = layers[i].id;
+                    mrkLayersNode.appendChild(newLayer);
+                }
+            })
+            .fail(function (jqXHR, textStatus) {
+                addMessage("there was a problem gathering the layers list for this MRK project.");
+                console.log(textStatus);
+            })
+    }
+    /**#######################   VIEW ATTRIBUTES FROM MRK LAYER    #########################**/
+
 
 
 
