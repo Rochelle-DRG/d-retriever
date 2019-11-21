@@ -203,7 +203,7 @@ $(document).ready(function () {
             })
     }); //end mRK-login-button .click
 
-    function generateMRKLayersDropdownList(){
+    function generateMRKLayersDropdownList() {
         $.ajax({
             method: "GET",
             url: "https://www.daveyresourcekeeper.com/api/v2/projects/configuration/?hash=",
@@ -225,13 +225,13 @@ $(document).ready(function () {
                     let newLayer = document.createElement("option");
                     newLayer.innerText = layers[i].name;
                     newLayer.value = i;
-                    mrkLayersNode.appendChild(newLayer);
+                    layer.attri              mrkLayersNode.appendChild(newLayer);
                 }
-                $("#select-mrk-layer-button").click (function () {
+                $("#select-mrk-layer-button").click(function () {
                     let selectedLayer = document.getElementById("mrk-layer-select").value;
                     displayMRKAttributes(msg.data.layers[selectedLayer]);
                 })
-            
+
             })
             .fail(function (jqXHR, textStatus) {
                 addMessage("there was a problem gathering the layers list for this MRK project.");
@@ -239,17 +239,16 @@ $(document).ready(function () {
             })
     }
     /**#######################   VIEW ATTRIBUTES FROM MRK LAYER    #########################**/
-    function displayMRKAttributes(layer){
+    function displayMRKAttributes(layer) {
         let attrListNode = document.getElementById("mrk-attributes");
-        let mrkAttrTypes = ["null", "species", "integer", "boolean", "string-from-list" , "string", "date"];
-        for (let i = 0; i<layer.attributes.length; i++){
-            let attr = layer.attributes[i];
-            let attTD = document.createElement("td");
-            attTD.innerText = JSON.stringify({Name: attr.name, Type: mrkAttrTypes[attr.attributes_type_id], Abbrev: attr.abbrev});
-            attrListNode.appendChild(attTD); 
-        }
-    }
+        let mrkAttrTypes = ["null", "species", "integer", "boolean", "string-from-list", "string", "date"];
 
+        var assignApp = angular.module('assignApp', []);
+        assignApp.controller('assignCtrl', function ($scope) {
+            $scope.mrkAttrTypes = mrkAttrTypes;
+            $scope.mrkLayer = layer;
+        })
+    }
 
     /**#######################   FORMATTING COLLECTOR DATA FOR MRK    #########################**/
 

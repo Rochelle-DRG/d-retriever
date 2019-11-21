@@ -4,6 +4,8 @@
 <head>
     <title>~RETRIEVER~</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    
 </head>
 
 <body class="container">
@@ -69,13 +71,20 @@
 
     </aside>
     <!--ROW THREE-->
-    <assignment>
+    <assignment ng-app="assignApp" ng-controller="assignCtrl">
         <table id="attr-assignment">
             <tr>
                 <th>Collector Attribute</th>
                 <th>Conversion</th>
                 <th>MRK Attribute</th>
                 <th>MRK Expected Data Type </th>
+            </tr>
+            <tr ng-repeat="attribute in mrkLayer.attributes">
+                <td ><select ng-options="collectAttr as collectLayer.attribute.name for collectLayer in collectLayers track by collectLayer.attribute.objectID">
+                     </select></td>
+                <td>null to string</td>   
+                <td>{{attribute.name}}</td>  
+                <td>{{mrkAttrTypes[attribute.type]}}</td>
             </tr>
         </table>
     </assignment>
