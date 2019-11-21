@@ -39,7 +39,8 @@
   #message {
     position: absolute;
     top: 60px;
-    left: 550px;
+    /* left: 550px; */
+    left: 775px;
     font-family: 'Courier New', Courier, monospace;
     /* transform: translate(-50%, -50%); */
     width: 400px;
