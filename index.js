@@ -1,4 +1,3 @@
-console.log("index loaded");
 $(document).ready(function () {
     console.log("document ready, jquery working");
 
@@ -60,8 +59,6 @@ $(document).ready(function () {
         }
     })
         .done(function (msg) {
-            // console.log(msg);
-            // messageDiv.innerHTML = "access token is : <br/>" + msg.token
             token = msg.token;
             messageDiv.innerHTML = "Okay, we're logged in to ArcGIS Online.";
         })
@@ -78,9 +75,6 @@ $(document).ready(function () {
         $.ajax({
             method: "POST",
             url: "https://services3.arcgis.com/kwmUh9MJciUcuce3/arcgis/rest/services/MyMapService/FeatureServer/0/query?token=" + token,
-            // url: "https://services3.arcgis.com/kwmUh9MJciUcuce3/arcgis/rest/services/MyMapService/FeatureServer/0/query?token=g6SmFR5yRa07hhE7Rn5UzNBK8YghiP9oixoMnIrN8_hpA3G42asSjxgl0e5wjJeRXUSjlQNx087st9EFE68wVtRMAUDmpkyaJHLW8vN7SRDZpvw9lTm-jwUCvzkKWrNsJ6wR-t3nn2dG9yCcJDnSCp9ziB_krdlVlyUpvz82iWyEpzhMPyAFlDINWSlZeY2Y60_YPFj58u3SEbyu4XzIw5_jBsCvPe6myJGb4eL1wf0hu8ZHtcPFAZ9ITMGZeTKH",
-            // url: "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0/query",
-            // token: token,
             dataType: "json",
             data: {
                 // returnCountOnly: "true",
@@ -89,34 +83,18 @@ $(document).ready(function () {
                 where: "OBJECTID > 0",
                 outSr: "4326",
                 outfields: "*"
-                // outfields: "OBJECTID,Site_Status,Manhole_Number,StreetName"
             }
         }) //end .ajax
             .done(function (msg) {
-                // console.log(msg);
                 messageDiv.innerHTML = "We have retrieved the data from collector. ";
                 console.log();
                 var jsonInfoAsString = JSON.stringify(msg.features);
-                // messageDiv.innerHTML = "Data: <br>" + jsonInfoAsString;
-                // messageDiv.innerHTML = "Data (string) length: <br>" + jsonInfoAsString.length;
-                // messageDiv.innerHTML = "Data : <br>" + JSON.stringify(msg.features[0]);
-                // messageDiv.innerHTML = "Data: <br>" + JSON.stringify(msg.features[0].attributes.OBJECTID);
-                // messageDiv.innerHTML = "Data: <br>" + msg.features[1].attributes.OBJECTID; //successfully returns the property
 
                 /** For each manhole */
                 for (let i = 0; i < msg.features.length; i++) {
-                // for (let i = 0; i < 11; i++) {
-    
                     let stormManhole = makeManhole(msg.features[i]); //returns MRK-ready manhole object
                     submitToMRK(stormManhole, i);
-                    // console.log(msg.features[i].attributes.OBJECTID+" : "+msg.features[i].attributes.GlobalID);
                 }//end For
-                // // /** TEST TEST TEST */
-                // let stormManholeTest = makeManhole(msg.features[7]); //returns MRK-ready manhole object
-                // // messageDiv.innerHTML = JSON.stringify(msg.features[1]) +"<br/><br/>"+JSON.stringify(msg.features[0])+"<br/><br/>"+JSON.stringify(msg.features[2]);
-                // messageDiv.innerHTML = "What I made: <br/>"+JSON.stringify(stormManholeTest) +"<br/><br/>"+"What Collector gave me: <br/>"+JSON.stringify(msg.features[7]) ;
-
-                // submitToMRK(stormManholeTest);
             })
             .fail(function (jqXHR, textStatus) {
                 alert("Request failed: " + textStatus);
@@ -159,41 +137,12 @@ $(document).ready(function () {
                 Steps: nullToUnassigned(collectedManhole.attributes.Steps),
                 SolLid: nullToString(collectedManhole.attributes.SolidLid)
 
-                // ,UNIQUEID: "ShLa20191108153127",
-                // NOTES: "",
-                // ChangeTIME: "15:31:48",
-                // Inv_Time: "15:31:27",
-                // ChangeDATE: "11-08-2019",
-                // Inv_Date: "11-08-2019",
-                // Status: "Existing",
-                // MH_ID: "",
-                // Elevation: 0,
-                // Inverts: "0",
-                // Location: "",
-                // DT_Verify: 20191108,
-                // Material: "Unassigned",
-                // Invert_1: "",
-                // Invert_2: "",
-                // Invert_3: "",
-                // Invert_4: "",
-                // Invert_5: "",
-                // Invert_6: "",
-                // Invert_7: "",
-                // Invert_8: "",
-                // FormInv: "Unassigned",
-                // Steps: "Unassigned",
-                // SolLid: "Yes"
-    
             },
             geometry: {
                 type: "point",
                 coordinates: [
                     collectedManhole.geometry.x,
                     collectedManhole.geometry.y,
-
-                    // -9058101.08891544,
-                    // 5036721.17612163
-    
                 ]
             },
             factype: "Storm Manholes"
@@ -247,53 +196,11 @@ $(document).ready(function () {
 
     /**#######################   SUBMITTING DATA TO MRK    #########################**/
 
-    // let testManhole = {
-    //     properties: {
-    //         WRK_REGION: "N\/A",
-    //         WRK_AREA: "N/A",
-    //         UNIQUEID: "ShLa20191108153127",
-    //         NOTES: "",
-    //         ChangeTIME: "15:31:48",
-    //         Inv_Time: "15:31:27",
-    //         ChangeDATE: "11-08-2019",
-    //         Inv_Date: "11-08-2019",
-    //         Status: "Existing",
-    //         MH_ID: "",
-    //         Elevation: 0,
-    //         Inverts: "0",
-    //         Location: "",
-    //         DT_Verify: 20191108,
-    //         Material: "Unassigned",
-    //         Invert_1: "",
-    //         Invert_2: "",
-    //         Invert_3: "",
-    //         Invert_4: "",
-    //         Invert_5: "",
-    //         Invert_6: "",
-    //         Invert_7: "",
-    //         Invert_8: "",
-    //         FormInv: "Unassigned",
-    //         Steps: "Unassigned",
-    //         SolLid: "Yes"
-    //     },
-    //     geometry: {
-    //         type: "Point",
-    //         coordinates: [
-    //             -9058101.08891544,
-    //             5036721.17612163
-    //         ]
-    //     },
-    //     factype: "Storm Manholes"
-    // };
-    // let testManhole2 = JSON.parse('{"properties":{"WRK_REGION":"N\/A","WRK_AREA":"N/A","UNIQUEID":"ShLa20191108153127","NOTES":"","ChangeTIME":"15:31:48","Inv_Time":"15:31:27","ChangeDATE":"11-08-2019","Inv_Date":"11-08-2019","Status":"Existing","MH_ID":"","Elevation":0,"Inverts":"0","Location":"","DT_Verify":20191108,"Material":"Unassigned","Invert_1":"","Invert_2":"","Invert_3":"","Invert_4":"","Invert_5":"","Invert_6":"","Invert_7":"","Invert_8":"","FormInv":"Unassigned","Steps":"Unassigned","SolLid":"Yes"}, "geometry":{"type":"Point","coordinates":[-9058101.08891544,5036721.17612163]},"factype":"Storm Manholes"}');
-
-    // submitToMRK(testManhole2);
 
     function submitToMRK(manhole, manNum) {
         messageDiv.innerHTML = "Submitting number "+manNum+" to MRK";
 
         let dataVar = {
-            // f: "json",
             username: "rwolfe",
             password: "1Justice!",
             projectId: "8514", //test project id, real Kent id =1
