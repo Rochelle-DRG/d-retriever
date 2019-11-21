@@ -225,7 +225,7 @@ $(document).ready(function () {
                     let newLayer = document.createElement("option");
                     newLayer.innerText = layers[i].name;
                     newLayer.value = i;
-                    layer.attri              mrkLayersNode.appendChild(newLayer);
+                    mrkLayersNode.appendChild(newLayer);
                 }
                 $("#select-mrk-layer-button").click(function () {
                     let selectedLayer = document.getElementById("mrk-layer-select").value;
