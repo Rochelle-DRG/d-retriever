@@ -11,42 +11,50 @@ $(document).ready(function () {
         {
             name: "WRK_REGION",
             abbrev: "WRK_REGION",
-            attributes_type_id: 4
+            attributes_type_id: 4,
+            id: -90
         },
         {
             name: "WRK_AREA",
             abbrev: "WRK_AREA",
-            attributes_type_id: 4
+            attributes_type_id: 4,
+            id: -80
         },
         {
             name: "UNIQUEID",
             abbrev: "UNIQUEID",
-            attributes_type_id: 5 //I think this is right?
+            attributes_type_id: 5, //I think this is right?,
+            id: -70
         },
         {
             name: "NOTES",
             abbrev: "NOTES",
-            attributes_type_id: 5
+            attributes_type_id: 5,
+            id: -60
         },
         {
             name: "ChangeTIME",
             abbrev: "ChangeTIME",
-            attributes_type_id: 6 //???
+            attributes_type_id: 6, //???,
+            id: -50
         },
         {
             name: "Inv_Time",
             abbrev: "Inv_Time",
-            attributes_type_id: 6 //???
+            attributes_type_id: 6, //???,
+            id: -40
         },
         {
             name: "ChangeDATE",
             abbrev: "ChangeDATE",
-            attributes_type_id: 6 
+            attributes_type_id: 6 ,
+            id: -30
         },
         {
             name: "Inv_Date",
             abbrev: "Inv_Date",
-            attributes_type_id: 6
+            attributes_type_id: 6,
+            id: -20
         }
     ]
 
@@ -285,22 +293,41 @@ $(document).ready(function () {
     function displayMRKAttributes(layer) {
         let mrkAttrTypes = ["null", "species", "integer", "boolean", "string-from-list", "string", "date"];
         layer.attributes = layer.attributes.concat(mrkSpecialFields); //adds the MRK special fields to the attribute list
-        // layer.attributes = layer.attributes.sort
+        layer.attributes = sortAttributesByID(layer.attributes); 
         var assignModule = angular.module('assignApp', []);
         assignModule.controller('assignCtrl', ['$scope', function ($scope) {
             $scope.mrkAttrTypes = mrkAttrTypes;
             $scope.mrkLayer = layer;
             $scope.collectorLayer = collectorLayer;
             $scope.collectorLayerFields =[];
-
+            $scope.getDataType = getDataType(esriType);
 
 
         }])
         angular.bootstrap($("#attr-assignment"), ['assignApp']);
 
-
     }
-    // function sortAttributes(){};
+    function sortAttributesByID(objectArray){
+        let sorted = objectArray.sort(function(a,b) { return a.id - b.id }) 
+        return sorted;
+    };
+    function getDataType(esriType){
+        let esriTypesKey = {
+            "esriFieldTypeOID" : "integer",
+            esriFieldTypeString : "string",
+            esriFieldTypeInteger : "integer",
+            esriFieldTypeDate : "unixDateTime",
+            esriFieldTypeGlobalID : "string"
+        };
+        try{
+            console.log(esriTypesKey.esriFieldTypeOID);
+            let type = esriTypesKey.esriType;
+            return type;
+        }
+        catch(err) {
+            addMessage("could not get dataType of selected: "+err);
+        }
+    }
 
     /**#######################   FORMATTING COLLECTOR DATA FOR MRK    #########################**/
 

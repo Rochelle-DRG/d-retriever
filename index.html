@@ -75,6 +75,7 @@
         <table>
             <tr>
                 <th>Collector Attribute</th>
+                <th>C Attr Type</th>
                 <th>Conversion</th>
                 <th>MRK Attribute</th>
                 <th>MRK Expected Data Type </th>
@@ -83,6 +84,7 @@
                 <td><select
                         ng-options="collectAttr as collectAttr.alias for collectAttr in collectorLayer.fields track by collectAttr.name" ng-model="collectorLayerFields[$index]">
                     </select></td>
+                <td>{{collectorLayerFields[$index]}}</td>    
                 <td>null to string</td>
                 <td>{{attribute.name}}</td>
                <td>{{mrkAttrTypes[attribute.attributes_type_id]}}</td>
