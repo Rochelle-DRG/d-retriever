@@ -5,7 +5,50 @@ $(document).ready(function () {
     //~~~~remember my username Rochelle.Wolfe_DRGPartner
     var token;
     var mrkToken;
-    var messageDiv = document.getElementById('message')
+    var messageDiv = document.getElementById('message');
+    let collectorLayer;
+    let mrkSpecialFields = [
+        {
+            name: "WRK_REGION",
+            abbrev: "WRK_REGION",
+            attributes_type_id: 4
+        },
+        {
+            name: "WRK_AREA",
+            abbrev: "WRK_AREA",
+            attributes_type_id: 4
+        },
+        {
+            name: "UNIQUEID",
+            abbrev: "UNIQUEID",
+            attributes_type_id: 5 //I think this is right?
+        },
+        {
+            name: "NOTES",
+            abbrev: "NOTES",
+            attributes_type_id: 5
+        },
+        {
+            name: "ChangeTIME",
+            abbrev: "ChangeTIME",
+            attributes_type_id: 6 //???
+        },
+        {
+            name: "Inv_Time",
+            abbrev: "Inv_Time",
+            attributes_type_id: 6 //???
+        },
+        {
+            name: "ChangeDATE",
+            abbrev: "ChangeDATE",
+            attributes_type_id: 6 
+        },
+        {
+            name: "Inv_Date",
+            abbrev: "Inv_Date",
+            attributes_type_id: 6
+        }
+    ]
 
     /**Kent Ohio Stormwater sample argis app that Holly made */
     var clientId = 'Lv925FWYHn6Tg1ga'; // 
@@ -83,7 +126,7 @@ $(document).ready(function () {
     loginToArcIGSWithUsernameAndPass(ag_username, ag_password);
 
 
-    /**#######################   GETTING COLLECTOR USER LAYER INFO    #########################**/
+    /**#######################   GETTING COLLECTOR PROJECT LAYER INFO    #########################**/
     $("#select-proj-button").click(function () {
         messageDiv.innerHTML = "Getting Layers for " + document.getElementById("project-select").innerHTML;
         let projectLayersURL = document.getElementById("project-select").value + "layers?token=" + token;
@@ -110,7 +153,7 @@ $(document).ready(function () {
                     let layerId = document.getElementById("layer-select").value;
                     messageDiv.innerHTML = "This layer has " + msg.layers[layerId].fields.length + " fields. Next step logging to MRK and select they layer to send data to.";
                     document.getElementById("mrk").classList.toggle("hide");
-
+                    collectorLayer = msg.layers[layerId];
                 });
             })
             .fail(function (jqXHR, textStatus) {
@@ -190,7 +233,7 @@ $(document).ready(function () {
             .done(function (msg) {
                 addMessage("Successful login to MRK");
                 mrkToken = msg.token;
-                console.log(mrkToken);
+                // console.log(mrkToken);
                 document.getElementById("mrk").classList.toggle("hide");
                 document.getElementById("select-mrk-layer").classList.toggle("hide");
 
@@ -216,8 +259,8 @@ $(document).ready(function () {
         })
             .done(function (msg) {
                 addMessage("Successfully gathered list of MRK layers for this project.");
-                console.log(msg);
-                console.log(msg.data.layers);
+                // console.log(msg);
+                // console.log(msg.data.layers);
                 let layers = msg.data.layers;
                 /** Adds each layer to the dropdown options*/
                 let mrkLayersNode = document.getElementById("mrk-layer-select");
@@ -240,29 +283,40 @@ $(document).ready(function () {
     }
     /**#######################   VIEW ATTRIBUTES FROM MRK LAYER    #########################**/
     function displayMRKAttributes(layer) {
-        let attrListNode = document.getElementById("mrk-attributes");
         let mrkAttrTypes = ["null", "species", "integer", "boolean", "string-from-list", "string", "date"];
-
-        var assignApp = angular.module('assignApp', []);
-        assignApp.controller('assignCtrl', function ($scope) {
+        layer.attributes = layer.attributes.concat(mrkSpecialFields); //adds the MRK special fields to the attribute list
+        // layer.attributes = layer.attributes.sort
+        var assignModule = angular.module('assignApp', []);
+        assignModule.controller('assignCtrl', ['$scope', function ($scope) {
             $scope.mrkAttrTypes = mrkAttrTypes;
             $scope.mrkLayer = layer;
-        })
+            $scope.collectorLayer = collectorLayer;
+            $scope.collectorLayerFields =[];
+
+
+
+        }])
+        angular.bootstrap($("#attr-assignment"), ['assignApp']);
+
+
     }
+    // function sortAttributes(){};
 
     /**#######################   FORMATTING COLLECTOR DATA FOR MRK    #########################**/
 
     function makeManhole(collectedManhole) {
         let manhole = {
             properties: {
-                WRK_REGION: "N\/A",
-                WRK_AREA: "N/A",
-                UNIQUEID: collectedManhole.attributes.GlobalID,
-                NOTES: nullToString(collectedManhole.attributes.Comments),
-                ChangeTIME: formatTime(collectedManhole.attributes.EditDate),
-                Inv_Time: formatTime(collectedManhole.attributes.CreationDate),
-                ChangeDATE: formatDate(collectedManhole.attributes.EditDate),
-                Inv_Date: formatDate(collectedManhole.attributes.CreationDate),
+                WRK_REGION: "N\/A",//***SPECIAL
+                WRK_AREA: "N/A",//***SPECIAL
+                UNIQUEID: collectedManhole.attributes.GlobalID,//***SPECIAL
+                NOTES: nullToString(collectedManhole.attributes.Comments),//***SPECIAL
+                ChangeTIME: formatTime(collectedManhole.attributes.EditDate),//***SPECIAL
+                Inv_Time: formatTime(collectedManhole.attributes.CreationDate),//***SPECIAL
+                ChangeDATE: formatDate(collectedManhole.attributes.EditDate),//***SPECIAL
+                Inv_Date: formatDate(collectedManhole.attributes.CreationDate),//***SPECIAL
+
+
                 Status: collectedManhole.attributes.Site_Status,
                 MH_ID: "",
                 Elevation: convertNullElevation(collectedManhole.attributes.TopElevationft),
