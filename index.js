@@ -300,7 +300,7 @@ $(document).ready(function () {
             $scope.mrkLayer = layer;
             $scope.collectorLayer = collectorLayer;
             $scope.collectorLayerFields =[];
-            $scope.getDataType = getDataType(esriType);
+            $scope.getDataType = getDataType;
 
 
         }])
@@ -314,18 +314,18 @@ $(document).ready(function () {
     function getDataType(esriType){
         let esriTypesKey = {
             "esriFieldTypeOID" : "integer",
-            esriFieldTypeString : "string",
-            esriFieldTypeInteger : "integer",
-            esriFieldTypeDate : "unixDateTime",
-            esriFieldTypeGlobalID : "string"
+            "esriFieldTypeString" : "string",
+            "esriFieldTypeInteger" : "integer",
+            "esriFieldTypeDate" : "unixDateTime",
+            "esriFieldTypeGlobalID" : "string"
         };
         try{
-            console.log(esriTypesKey.esriFieldTypeOID);
-            let type = esriTypesKey.esriType;
+            let type = esriTypesKey[esriType];
             return type;
         }
         catch(err) {
             addMessage("could not get dataType of selected: "+err);
+            console.log(err);
         }
     }
 
