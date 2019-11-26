@@ -76,7 +76,6 @@
             <tr>
                 <th>Collector Attribute</th>
                 <th>C Attr Type</th>
-                <th>Conversion</th>
                 <th>MRK Attribute</th>
                 <th>MRK Expected Data Type </th>
             </tr>
@@ -86,7 +85,6 @@
                         ng-model="collectorLayerFields[$index]">
                     </select></td>
                 <td>{{getDataType(collectorLayerFields[$index].type)}}</td>
-                <td>null to string</td>
                 <td>{{attribute.name}}</td>
                 <td>{{mrkAttrTypes[attribute.attributes_type_id]}}</td>
 
@@ -101,6 +99,7 @@
     </aside>
 
     <article>
+        <button id="beginConverion">Begin Conversion</button>
     </article>
 
     <aside class="sidebar-right">

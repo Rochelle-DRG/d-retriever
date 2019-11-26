@@ -302,7 +302,20 @@ $(document).ready(function () {
             $scope.collectorLayerFields =[];
             $scope.getDataType = getDataType;
 
+            $("#beginConverion").click(function () {
+                //I am going to need the index, the mrk array, and the collectorLayerFields[]
+                console.log("click");
+                //check if all the boxes have a selection
+                if ($scope.collectorLayerFields.length !== $scope.mrkLayer.attributes.length){
+                    addMessage("All attributes are not assigned. There are "+ layer.attributes.length + " mrk Attributes, and only "+ $scope.collectorLayerFields.length + " collector attributes assigned.");
 
+                }
+                else if ($scope.collectorLayerFields.length === $scope.mrkLayer.attributes.length) {
+                    makeFeature(layer, mrkAttrTypes, $scope.collectorLayerFields);
+                }
+                else {addMessage("There was an issue beginning the conversion");
+                }
+            })
         }])
         angular.bootstrap($("#attr-assignment"), ['assignApp']);
 
@@ -327,6 +340,12 @@ $(document).ready(function () {
             addMessage("could not get dataType of selected: "+err);
             console.log(err);
         }
+    };
+    function makeFeature(mrkLayer, markAttrTypes, selectedCollectorLayerFields){
+        console.log("making a feature.");
+        console.log(mrkLayer);
+        console.log(markAttrTypes);
+        console.log(selectedCollectorLayerFields);
     }
 
     /**#######################   FORMATTING COLLECTOR DATA FOR MRK    #########################**/
