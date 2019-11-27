@@ -311,7 +311,9 @@ $(document).ready(function () {
 
                 }
                 else if ($scope.collectorLayerFields.length === $scope.mrkLayer.attributes.length) {
-                    makeFeature(layer, mrkAttrTypes, $scope.collectorLayerFields);
+                    // makeFeature(layer, mrkAttrTypes, $scope.collectorLayerFields);
+                    let copy = angular.copy($scope.collectorLayerFields);
+                    makeFeature(layer, mrkAttrTypes, copy);
                 }
                 else {addMessage("There was an issue beginning the conversion");
                 }
@@ -343,9 +345,35 @@ $(document).ready(function () {
     };
     function makeFeature(mrkLayer, markAttrTypes, selectedCollectorLayerFields){
         console.log("making a feature.");
-        console.log(mrkLayer);
-        console.log(markAttrTypes);
-        console.log(selectedCollectorLayerFields);
+        // console.log(mrkLayer);
+        // console.log(markAttrTypes);
+        // console.log(selectedCollectorLayerFields); //an array of objects
+        // console.log(selectedCollectorLayerFields.length); // 19
+        // console.log(selectedCollectorLayerFields['0']); //yes object
+        // console.log(selectedCollectorLayerFields['0'].type); //esriFieldTypeOID
+        // console.log(typeof selectedCollectorLayerFields); //consoles "object"
+
+        // console.log(selectedCollectorLayerFields[1][type]); //type is not defined
+
+        //make new feature object
+        let conversionTemplate = {};
+        //loop through both arrays
+        for (let i = 0; i< mrkLayer.attributes.length; i++){
+            let mrkAttrType = mrkLayer.attributes[i].attributes_type_id;
+            let cAttrType = selectedCollectorLayerFields[i].type;
+            console.log(mrkAttrType + " : "+cAttrType);
+            // console.log(mrkAttrType);
+
+            console.log(cAttrType);
+            // let conversion = detmineConversion(mrkLayer[i][attribute.attributes_type_id])
+        }
+        //compare types
+        // set conversion
+        //add property to new object
+        //display/preview
+        // submit
+        //begin looping through Collector features
+        //
     }
 
     /**#######################   FORMATTING COLLECTOR DATA FOR MRK    #########################**/
