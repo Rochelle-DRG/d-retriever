@@ -361,10 +361,8 @@ $(document).ready(function () {
         for (let i = 0; i< mrkLayer.attributes.length; i++){
             let mrkAttrType = mrkLayer.attributes[i].attributes_type_id;
             let cAttrType = selectedCollectorLayerFields[i].type;
-            console.log(mrkAttrType + " : "+cAttrType);
-            // console.log(mrkAttrType);
+            // console.log(mrkAttrType + " : "+cAttrType); // 4 : esriFieldTypeOID
 
-            console.log(cAttrType);
             // let conversion = detmineConversion(mrkLayer[i][attribute.attributes_type_id])
         }
         //compare types
