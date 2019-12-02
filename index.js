@@ -363,6 +363,7 @@ $(document).ready(function () {
             let cAttrType = selectedCollectorLayerFields[i].type;
             // console.log(mrkAttrType + " : "+cAttrType); // 4 : esriFieldTypeOID
 
+            getConversionFunction(mrkLayer.attributes[i], selectedCollectorLayerFields[i]);
             // let conversion = detmineConversion(mrkLayer[i][attribute.attributes_type_id])
         }
         //compare types
@@ -372,7 +373,55 @@ $(document).ready(function () {
         // submit
         //begin looping through Collector features
         //
-    }
+    };
+    //accepts the indivual attribute and returns the conversion
+    function getConversionFunction(mrk, col){
+        let mT = mrk.attributes_type_id;
+        let cT = getDataType(col.type);
+        console.log(cT + " : " + mT);
+        var conversionFunction = function(){}; // this update appropriately now
+
+        if (cT === "integer" && mT === 2){          // int->int
+            conversionFunction = nullToInt;
+        }
+        else if (cT === "string" && mT === 2){      // str->int
+            alert("you should not assign a string value to an int");
+        }
+
+        else if (cT === "integer" && mT === 4){
+            alert("you should not assign an int value to an drop-down string");
+        }
+        else if (cT === "string" && mT === 4){
+            console.log("this is a string from a list");
+            //null to string
+            //get dropdown options
+            //make those matches
+            conversionFunction = nullToString; //temporary until I solve this greater issue
+        }
+        
+        else if (cT === "string" && mT === 5 && mrk.name === "Inverts"){
+            conversionFunction = convertNumInverts;
+        }
+        else if (cT === "string" && mT === 5){
+            
+        }
+        else if (cT === "integer" && mT === 5){
+            
+        }
+        else if (cT === "unixDateTime" && mT === 5){
+            
+        }
+
+        else if (cT === "string" && mT === 6){
+            
+        }
+        else if (cT === "unixDateTime" && mT === 6){
+            
+        }
+        
+        console.log(conversionFunction);
+
+    };
 
     /**#######################   FORMATTING COLLECTOR DATA FOR MRK    #########################**/
 
@@ -391,7 +440,7 @@ $(document).ready(function () {
 
                 Status: collectedManhole.attributes.Site_Status,
                 MH_ID: "",
-                Elevation: convertNullElevation(collectedManhole.attributes.TopElevationft),
+                Elevation: nullToInt(collectedManhole.attributes.TopElevationft),
                 Inverts: convertNumInverts(collectedManhole.attributes.NumberInverts),
                 Location: "",
                 DT_Verify: formatDTVerify(collectedManhole.attributes.EditDate),
@@ -441,7 +490,7 @@ $(document).ready(function () {
         }
         else return value;
     };
-    function convertNullElevation(value) {
+    function nullToInt(value) {
         if (value === null) {
             return 0;
         }
