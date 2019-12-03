@@ -379,45 +379,63 @@ $(document).ready(function () {
         let mT = mrk.attributes_type_id;
         let cT = getDataType(col.type);
         console.log(cT + " : " + mT);
-        var conversionFunction = function(){}; // this update appropriately now
+        var conversionFunction = function(){}; 
 
-        if (cT === "integer" && mT === 2){          // int->int
+        // int->int
+        if (cT === "integer" && mT === 2){                      
             conversionFunction = nullToInt;
         }
-        else if (cT === "string" && mT === 2){      // str->int
+        // str->int
+        else if (cT === "string" && mT === 2){                  
             alert("you should not assign a string value to an int");
         }
-
-        else if (cT === "integer" && mT === 4){
+        // int->ddStr!
+        else if (cT === "integer" && mT === 4){                 
             alert("you should not assign an int value to an drop-down string");
         }
-        else if (cT === "string" && mT === 4){
+        // str->ddStr
+        else if (cT === "string" && mT === 4){                  
             console.log("this is a string from a list");
             //null to string
             //get dropdown options
             //make those matches
-            conversionFunction = nullToString; //temporary until I solve this greater issue
+            conversionFunction = nullToString; //temporary 
         }
-        
-        else if (cT === "string" && mT === 5 && mrk.name === "Inverts"){
+        // str->Inverts
+        else if (cT === "string" && mrk.name === "Inverts"){    
             conversionFunction = convertNumInverts;
         }
-        else if (cT === "string" && mT === 5){
-            
+        // str->str
+        else if (cT === "string" && mT === 5){                  
+            conversionFunction = nullToString;
         }
-        else if (cT === "integer" && mT === 5){
-            
+        // int->str!
+        else if (cT === "integer" && mT === 5){                 
+            alert("are you sure you want to convert this integer value to string?");
+            conversionFunction = intToString;
         }
-        else if (cT === "unixDateTime" && mT === 5){
-            
+        // unix->time                                                        
+        else if (cT === "unixDateTime" && (mrk.name === "ChangeTIME" || mrk.name === "Inv_Time")){
+            conversionFunction = formatTime;
+        }
+        // unix->str!
+        else if (cT === "unixDateTime" && mT === 5){            
+            alert("date field should not be converted to string");
+        }
+        // str->date
+        else if (cT === "string" && mT === 6){                  
+            alert("string field should not be converted to date");
         }
 
-        else if (cT === "string" && mT === 6){
-            
+        // unix->DT_Verify
+        else if (cT === "unixDateTime" && mT === 6 && mrk.name === "DT_Verify"){
+            conversionFunction = formatDTVerify;
         }
+        // unix->date
         else if (cT === "unixDateTime" && mT === 6){
-            
+            conversionFunction = formatDate;
         }
+
         
         console.log(conversionFunction);
 
@@ -507,6 +525,12 @@ $(document).ready(function () {
             return "Unassigned";
         }
         else return value;
+    }
+    function intToString(value) {
+        if (value === null) {
+            return "";
+        }
+        else return value.toString();
     }
 
 
