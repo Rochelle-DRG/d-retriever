@@ -268,7 +268,7 @@ $(document).ready(function () {
             .done(function (msg) {
                 addMessage("Successfully gathered list of MRK layers for this project.");
                 // console.log(msg);
-                // console.log(msg.data.layers);
+                console.log(msg.data.layers);
                 let layers = msg.data.layers;
                 /** Adds each layer to the dropdown options*/
                 let mrkLayersNode = document.getElementById("mrk-layer-select");
@@ -294,6 +294,10 @@ $(document).ready(function () {
         let mrkAttrTypes = ["null", "species", "integer", "boolean", "string-from-list", "string", "date"];
         layer.attributes = layer.attributes.concat(mrkSpecialFields); //adds the MRK special fields to the attribute list
         layer.attributes = sortAttributesByID(layer.attributes); 
+        
+        let naField = {name: "N/A", type: "esriFieldTypeString", alias: "N/A"}
+        collectorLayer.fields.push(naField);//add N/A option to collector layer attributes
+
         var assignModule = angular.module('assignApp', []);
         assignModule.controller('assignCtrl', ['$scope', function ($scope) {
             $scope.mrkAttrTypes = mrkAttrTypes;
