@@ -1,0 +1,42 @@
+{
+    "id": 187,
+    "attributes_type_id": 4,
+    "name": "Material MH",
+    "editable": 1,
+    "abbrev": "Material",
+    "sort_order": 2,
+    "show_callout": 0,
+    "display_order": 90,
+    "attribute_group_id": 0,
+    "attribute_group_order": 1,
+    "attribute_group_name": "Site",
+    "required": true,
+    "default_value": "Unassigned",
+    "loadlast": true,
+    "listvalues": [
+        {
+            "list_id": 1136,
+            "value": "Brick",
+            "order": 20,
+            "tooltip": null
+        },
+        {
+            "list_id": 1137,
+            "value": "Concrete",
+            "order": 30,
+            "tooltip": null
+        },
+        {
+            "list_id": 1138,
+            "value": "Parged",
+            "order": 40,
+            "tooltip": null
+        },
+        {
+            "list_id": 1135,
+            "value": "Unassigned",
+            "order": 10,
+            "tooltip": null
+        }
+    ]
+}

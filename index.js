@@ -305,6 +305,7 @@ $(document).ready(function () {
             $scope.collectorLayer = collectorLayer;
             $scope.collectorLayerFields =[];
             $scope.getDataType = getDataType;
+            $scope.ddOptions = [];
 
             $("#beginConverion").click(function () {
                 //I am going to need the index, the mrk array, and the collectorLayerFields[]

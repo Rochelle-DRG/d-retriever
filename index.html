@@ -78,15 +78,38 @@
                 <th>C Attr Type</th>
                 <th>MRK Attribute</th>
                 <th>MRK Expected Data Type </th>
+                <th>Dropdown Options Assignment</th>
             </tr>
-            <tr ng-repeat="attribute in mrkLayer.attributes">
+            <tr ng-repeat="attribute in mrkLayer.attributes" ng-init="attributeIdx = $index">
                 <td><select
                         ng-options="collectAttr as collectAttr.alias for collectAttr in collectorLayer.fields track by collectAttr.name"
                         ng-model="collectorLayerFields[$index]">
                     </select></td>
+
                 <td>{{getDataType(collectorLayerFields[$index].type)}}</td>
                 <td>{{attribute.name}}</td>
                 <td>{{mrkAttrTypes[attribute.attributes_type_id]}}</td>
+                <!--IF the Attr at this index has dropdown options-->
+                <td>
+                    <table ng-if="(attribute.attributes_type_id === 4) && collectorLayerFields[$index]">
+                        <tr>
+                            <th>Collector Values</th>
+                            <th>MRK Values</th>
+                        </tr>
+                        <!-- <tr ng-repeat="mrkDDOption in mrkDDOptions"> -->
+                        <tr multiple ng-repeat="mrkOption in attribute.listvalues" ng-init="optionIdx = $index">
+                            <td ng-if="collectorLayerFields[attributeIdx].domain != null">
+                                <select
+                                    ng-options="cOption as cOption.name for cOption in collectorLayerFields[attributeIdx].domain.codedValues"
+                                    ng-model="mrkOption.colAssignment">
+                                    <option>An option?</option>
+                                </select></td>
+                            <!-- <td ng-if="collectorLayerFields[$index].domain == null">Domain null: {{collectorLayerFields[$index].domain}}</td> -->
+                            <td>{{mrkOption.value}}</td>
+
+                        </tr>
+                    </table>
+                </td>
             </tr>
         </table>
     </assignment>
