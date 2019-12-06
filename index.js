@@ -281,7 +281,7 @@ $(document).ready(function () {
                 $("#select-mrk-layer-button").click(function () {
                     let selectedLayer = document.getElementById("mrk-layer-select").value;
                     displayMRKAttributes(msg.data.layers[selectedLayer]);
-                })
+                })//small nil change for pull request
 
             })
             .fail(function (jqXHR, textStatus) {
